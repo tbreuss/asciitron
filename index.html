@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Hello World!</title>
+    <style>
+    	html {
+    		height:100%;
+    	}
+    	body {
+    		margin:0;
+    		padding:0;
+    		height:100%;
+    	}
+    	#main {
+    		display: flex;
+			flex-flow: row nowrap;
+			justify-content: space-around;
+			align-items: flex-start;
+			width:100%;
+			height:100%;
+    	}
+
+		#editor {
+			-moz-appearance: textfield-multiline;
+			-webkit-appearance: textarea;
+			border: none;
+			font: medium -moz-fixed;
+			font: -webkit-small-control;
+			height: 100%;
+			/*resize: both;*/
+    		display:block;
+    		flex: 1 1 50%;
+			background: #000;
+			color: #fff;  
+			overflow-y:scroll;
+			font-size: 14px;			     		
+		}    	
+    	#preview {
+    		height: 100%;
+    		flex: 1 1 50%;
+			background: #ffffff;
+			overflow-y:scroll;
+			overflow-x:none;
+    	}
+    </style>
+  </head>
+  <body>	
+    <div id="main">		    
+		<div id="editor" contenteditable></div>
+		<div id="preview">
+		</div>
+    </div>
+  </body>
+
+  <script src="bower_components/asciidoctor.js/dist/asciidoctor-all.min.js"></script>
+  <script>
+
+    // You can also require other files to run in this process
+    require('./renderer.js')
+	
+  </script>
+</html>

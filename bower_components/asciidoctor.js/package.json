@@ -1,0 +1,56 @@
+{
+  "name": "asciidoctor.js",
+  "version": "1.5.4",
+  "description": "A JavaScript AsciiDoc processor, cross-compiled from the Ruby-based AsciiDoc implementation, Asciidoctor, using Opal",
+  "main": "dist/npm/asciidoctor-core.min.js",
+  "files": [
+    "dist/npm/asciidoctor-core.js",
+    "dist/npm/asciidoctor-core.min.js",
+    "dist/npm/asciidoctor-extensions.js",
+    "dist/npm/asciidoctor-extensions.min.js",
+    "dist/npm/asciidoctor-docbook.js",
+    "dist/npm/asciidoctor-docbook.min.js",
+    "dist/css/asciidoctor.css",
+    "LICENSE",
+    "README.adoc"
+  ],
+  "scripts": {
+    "test": "node npm/test/jasmine-bower.js && node npm/test/jasmine-bower-min.js && node npm/test/jasmine-npm.js",
+    "build": "node npm/build.js && npm run test",
+    "package": "MINIFY=1 node npm/build.js && MINIFY=1 npm run test",
+    "examples": "node npm/examples.js",
+    "benchmark": "node npm/benchmark.js",
+    "release": "MINIFY=1 node npm/release.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/asciidoctor/asciidoctor.js.git"
+  },
+  "keywords": [
+    "asciidoc",
+    "asciidoctor",
+    "opal",
+    "javascript",
+    "library"
+  ],
+  "authors": [
+    "Dan Allen (https://github.com/mojavelinux)",
+    "Guillaume Grossetie (https://github.com/mogztter)",
+    "Anthonny Quérouil (https://github.com/anthonny)"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/asciidoctor/asciidoctor.js/issues"
+  },
+  "homepage": "https://github.com/asciidoctor/asciidoctor.js",
+  "dependencies": {
+    "opal-npm-wrapper": "^0.9.0-beta2",
+    "xmlhttprequest": "~1.7.0"
+  },
+  "devDependencies": {
+    "bower": "^1.5.3",
+    "jasmine": "^2.4.1",
+    "colors": "1.1.2",
+    "async": "^1.5.0"
+  }
+}
