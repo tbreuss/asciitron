@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Asciidoc-Editor</title>
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="asciidoctor.js/css/asciidoctor.css">
+</head>
+<body>
+<div id="main">
+    <div id="editor" contenteditable></div>
+    <div id="preview"></div>
+</div>
+</body>
+
+<script src="asciidoctor.js/asciidoctor-all.min.js"></script>
+<script>
+    require('./js/renderer.js')
+</script>
+</html>

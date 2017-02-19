@@ -17,7 +17,7 @@ function createWindow() {
 
     // and load the index.html of the app.
     mainWindow.loadURL(url.format({
-        pathname: path.join(__dirname, 'index.html'),
+        pathname: path.join(__dirname, 'app/index.html'),
         protocol: 'file:',
         slashes: true
     }))
@@ -31,20 +31,33 @@ function createWindow() {
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
         mainWindow = null
+        app.quit()
     })
 
     mainWindow.webContents.on('did-finish-load', () => {
         mainWindow.webContents.send('replace-content',
-            'http://asciidoctor.org[*Asciidoctor*]' +
-            'running on http://opalrb.org[_Opal_]' +
+            'http://asciidoctor.org[*Asciidoctor*] ' +
+            'running on http://opalrb.org[_Opal_] ' +
             'brings AsciiDoc to the browser!!'
         )
     })
 
-    exports.mainWindow = mainWindow
-    require('./menu/mainmenu')
+    mainWindow.on('hide', function () {
+        var menu = electron.Menu.getApplicationMenu()
+        menu.items[1].submenu.items[1].enabled = false
+        console.log('hide')
+    })
+
+    mainWindow.on('show', function () {
+        var menu = electron.Menu.getApplicationMenu()
+        menu.items[1].submenu.items[1].enabled = true
+        console.log('show')
+    })
+
+    require('./menu')
 
 }
+
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

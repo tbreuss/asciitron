@@ -1,18 +1,17 @@
 {
-  "name": "electron-quick-start",
-  "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "name": "asciidoctor",
+  "version": "0.1.0",
+  "description": "Asciidoctor-Editor",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
   },
-  "repository": "https://github.com/electron/electron-quick-start",
+  "repository": "https://github.com/tbreuss/asciidoctor-electron",
   "keywords": [
-    "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo"
+    "Asciidoctor",
+    "Editor",
+    "Cross Platform",
+    "Electron"
   ],
   "author": "GitHub",
   "license": "CC0-1.0",
