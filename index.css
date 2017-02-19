@@ -26,11 +26,13 @@ body {
     /*resize: both;*/
     display: block;
     flex: 1 1 50%;
-    background: #000;
-    color: #fff;
+    background: #2d2d2d;
+    color: #cccccc;
     overflow-y: scroll;
     overflow-x: hidden;
-    font-size: 14px;
+    font-size: 1.1em;
+    padding: 2em 1em;
+    line-height: 1.4em;
 }
 
 #preview {
@@ -39,4 +41,5 @@ body {
     background: #ffffff;
     overflow-y: scroll;
     overflow-x: hidden;
+    padding: 2em 1em;
 }

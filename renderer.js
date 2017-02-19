@@ -17,13 +17,21 @@ var convertAsciidoc = function (event) {
     var $this = this
     delay(function () {
         var asciidoc = $this.innerText
-        //console.log(asciidoc)
-        var html_doc = Opal.Asciidoctor.$convert(asciidoc)
-        document.getElementById('preview').innerHTML = html_doc
+        var htmldoc = Opal.Asciidoctor.$convert(asciidoc)
+        document.getElementById('preview').innerHTML = htmldoc
     }, 200)
 }
 
 var editor = document.getElementById('editor')
+
+editor.addEventListener('scroll', function (event) {
+    // see: http://stackoverflow.com/questions/2481350/how-to-get-scrollbar-position-with-javascript
+    var editor = event.srcElement;
+    var preview = document.getElementById('preview')
+    var editorScrollPosition = editor.scrollTop / (editor.scrollHeight - editor.clientHeight);
+    preview.scrollTop = editorScrollPosition * (preview.scrollHeight - preview.clientHeight)
+})
+
 editor.addEventListener('input', convertAsciidoc)
 editor.dispatchEvent(new Event('input'))
 

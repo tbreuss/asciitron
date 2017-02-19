@@ -4,32 +4,37 @@ const app = electron.app
 const dialog = require('electron').dialog
 const mainWindow = require('../main').mainWindow
 
-var showOpen = function () {
-    dialog.showOpenDialog({
-        properties: ['openFile'],
-        filters: [/*{ name: 'GPX', extensions: ['gpx'] }*/]
-    }, function (filePaths) {
-        mainWindow.webContents.send('read-file', filePaths)
-    })
-}
-
 const template = [
     {
         label: 'Datei',
         submenu: [
             {
                 label: 'Öffnen',
-                click: () => {
-                    showOpen()
+                click (item, focusedWindow) {
+                    dialog.showOpenDialog({
+                        properties: ['openFile'],
+                        filters: [/*{ name: 'GPX', extensions: ['gpx'] }*/]
+                    }, function (filePaths) {
+                        focusedWindow.webContents.send('read-file', filePaths)
+                    })
                 }
             },
             {
                 label: 'Speichern',
-                click: () => {
+                click (item, focusedWindow) {
                     dialog.showSaveDialog({}, function (fileName) {
-                        mainWindow.webContents.send('save-file', fileName)
+                        focusedWindow.webContents.send('save-file', fileName)
                     })
                 }
+            },
+            {
+                label: 'Test',
+                click (item, focusedWindow, event) {
+                    console.log(item)
+                    console.log(focusedWindow)
+                    console.log(event)
+                },
+                xenable: mainWindow === null
             }
         ]
     },
@@ -206,3 +211,27 @@ if (process.platform === 'darwin') {
 
 const menu = Menu.buildFromTemplate(template)
 Menu.setApplicationMenu(menu)
+
+mainWindow.on('activate', function () {
+    //contextMenu.items[0].visible = false;
+    //contextMenu.items[1].visible = true;
+    console.log('activate')
+    menu.items[1].submenu.items[0].enabled = true
+    menu.items[1].submenu.items[1].enabled = true
+    menu.items[1].submenu.items[2].enabled = true
+    Menu.setApplicationMenu(menu)
+});
+
+mainWindow.on('restore', function () {
+    //contextMenu.items[0].visible = true;
+    //contextMenu.items[1].visible = false;
+    console.log('restore')
+});
+
+mainWindow.on('closed', function () {
+    console.log('closed')
+    menu.items[1].submenu.items[0].enabled = false
+    menu.items[1].submenu.items[1].enabled = false
+    menu.items[1].submenu.items[2].enabled = false
+    Menu.setApplicationMenu(menu)
+});
