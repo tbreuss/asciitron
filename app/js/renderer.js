@@ -95,18 +95,18 @@ ipcRenderer.on('set-layout-columns', (event, config) => {
     preview.style.display = 'block'
 })
 
-ipcRenderer.on('toggle-preview-pane', (event) => {
-    var editor = document.getElementById('preview')
-    if (editor.style.display === 'none') {
+ipcRenderer.on('show-editor-pane', (event, visible) => {
+    var editor = document.getElementById('editor')
+    if (visible) {
         editor.style.display = 'block'
     } else {
         editor.style.display = 'none'
     }
 })
 
-ipcRenderer.on('toggle-editor-pane', (event) => {
-    var editor = document.getElementById('editor')
-    if (editor.style.display === 'none') {
+ipcRenderer.on('show-preview-pane', (event, visible) => {
+    var editor = document.getElementById('preview')
+    if (visible) {
         editor.style.display = 'block'
     } else {
         editor.style.display = 'none'

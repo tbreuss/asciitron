@@ -31,9 +31,7 @@ const template = [
             {
                 label: 'Test',
                 click (item, focusedWindow, event) {
-                    console.log(item)
-                    console.log(focusedWindow)
-                    console.log(event)
+                    clickFunction(item, focusedWindow, event)
                 }
             }
         ]
@@ -91,34 +89,53 @@ const template = [
                 type: 'separator'
             },
             {
-                label: 'Lef 1:2 Right',
+                label: 'Left 1:2 Right',
                 click (item, focusedWindow) {
+                    showPaneVisibility(focusedWindow)
                     focusedWindow.webContents.send('set-layout-columns', {left: 33, right: 67})
                 }
             },
             {
-                label: 'Lef 1:1 Right',
+                label: 'Left 1:1 Right',
                 click (item, focusedWindow) {
+                    showPaneVisibility(focusedWindow)
                     focusedWindow.webContents.send('set-layout-columns', {left: 50, right: 50})
                 }
             },
             {
-                label: 'Lef 2:1 Right',
+                label: 'Left 2:1 Right',
                 click (item, focusedWindow) {
+                    showPaneVisibility(focusedWindow)
                     focusedWindow.webContents.send('set-layout-columns', {left: 67, right: 33})
                 }
             },
             {
-                label: 'Toggle Preview Pane',
+                label: 'Hide Editor Pane',
                 click (item, focusedWindow) {
-                    focusedWindow.webContents.send('toggle-preview-pane')
-                }
+                    setEditorPaneVisibility(focusedWindow, false)
+                },
+                visible: true
             },
             {
-                label: 'Toggle Editor Pane',
+                label: 'Show Editor Pane',
                 click (item, focusedWindow) {
-                    focusedWindow.webContents.send('toggle-editor-pane')
-                }
+                    setEditorPaneVisibility(focusedWindow, true)
+                },
+                visible: false
+            },
+            {
+                label: 'Hide Preview Pane',
+                click (item, focusedWindow) {
+                    setPreviewPaneVisibility(focusedWindow, false)
+                },
+                visible: true
+            },
+            {
+                label: 'Show Preview Pane',
+                click (item, focusedWindow) {
+                    setPreviewPaneVisibility(focusedWindow, true)
+                },
+                visible: false
             },
             {
                 type: 'separator'
@@ -246,4 +263,28 @@ if (process.platform === 'darwin') {
 }
 
 const menu = Menu.buildFromTemplate(template)
+
+function setEditorPaneVisibility(focusedWindow, visible) {
+    focusedWindow.webContents.send('show-editor-pane', visible)
+    menu.items[3].submenu.items[6].visible = visible
+    menu.items[3].submenu.items[7].visible = !visible
+    if (!visible && menu.items[3].submenu.items[9].visible) {
+        setPreviewPaneVisibility(focusedWindow, true)
+    }
+}
+
+function setPreviewPaneVisibility(focusedWindow, visible) {
+    focusedWindow.webContents.send('show-preview-pane', visible)
+    menu.items[3].submenu.items[8].visible = visible
+    menu.items[3].submenu.items[9].visible = !visible
+    if (!visible && menu.items[3].submenu.items[7].visible) {
+        setEditorPaneVisibility(focusedWindow, true)
+    }
+}
+
+function showPaneVisibility(focusedWindow) {
+    setEditorPaneVisibility(focusedWindow, true)
+    setPreviewPaneVisibility(focusedWindow, true)
+}
+
 Menu.setApplicationMenu(menu)
