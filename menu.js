@@ -31,7 +31,7 @@ const template = [
             {
                 label: 'Test',
                 click (item, focusedWindow, event) {
-                    clickFunction(item, focusedWindow, event)
+                    console.log('Test clicked')
                 }
             }
         ]
