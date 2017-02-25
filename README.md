@@ -1,5 +1,5 @@
 <<<<<<< HEAD
-# asciidoctor-electron
+# asciitron
 =======
 # electron-quick-start
 
