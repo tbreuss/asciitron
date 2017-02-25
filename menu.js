@@ -2,13 +2,14 @@ const {Menu} = require('electron')
 const electron = require('electron')
 const app = electron.app
 const dialog = require('electron').dialog
+var i18n = new(require('./translations/i18n'))
 
 const template = [
     {
-        label: 'Datei',
+        label: i18n.__('File'),
         submenu: [
             {
-                label: 'Öffnen',
+                label: i18n.__('Open'),
                 accelerator: 'CmdOrCtrl+O',
                 click (item, focusedWindow) {
                     dialog.showOpenDialog({
@@ -20,7 +21,7 @@ const template = [
                 }
             },
             {
-                label: 'Speichern',
+                label: i18n.__('Save'),
                 accelerator: 'CmdOrCtrl+S',
                 click (item, focusedWindow) {
                     dialog.showSaveDialog({}, function (fileName) {
@@ -29,7 +30,7 @@ const template = [
                 }
             },
             {
-                label: 'Test',
+                label: i18n.__('Test'),
                 click (item, focusedWindow, event) {
                     console.log('Test clicked')
                 }
@@ -37,49 +38,58 @@ const template = [
         ]
     },
     {
-        label: 'Edit',
+        label: i18n.__('Edit'),
         submenu: [
             {
+                label: i18n.__('Undo'),
                 role: 'undo'
             },
             {
+                label: i18n.__('Redo'),
                 role: 'redo'
             },
             {
                 type: 'separator'
             },
             {
+                label: i18n.__('Cut'),
                 role: 'cut'
             },
             {
+                label: i18n.__('Copy'),
                 role: 'copy'
             },
             {
+                label: i18n.__('Paste'),
                 role: 'paste'
             },
             {
+                label: i18n.__('Paste And Match Style'),
                 role: 'pasteandmatchstyle'
             },
             {
+                label: i18n.__('Delete'),
                 role: 'delete'
             },
             {
+                label: i18n.__('Select All'),
                 role: 'selectall'
             }
         ]
     },
     {
-        label: 'View',
+        label: i18n.__('Show'),
         submenu: [
             {
-                label: 'Reload',
+                label: i18n.__('Reload'),
                 accelerator: 'CmdOrCtrl+R',
                 click (item, focusedWindow) {
                     if (focusedWindow) focusedWindow.reload()
                 }
             },
             {
-                label: 'Toggle Developer Tools',
+                label: i18n.__('Toggle Developer Tools'),
+                role: 'toggledevtools',
                 accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
                 click (item, focusedWindow) {
                     if (focusedWindow) focusedWindow.webContents.toggleDevTools()
@@ -89,49 +99,49 @@ const template = [
                 type: 'separator'
             },
             {
-                label: 'Left 1:2 Right',
+                label: i18n.__('Left 1:2 Right'),
                 click (item, focusedWindow) {
                     showPaneVisibility(focusedWindow)
-                    focusedWindow.webContents.send('set-layout-columns', {left: 33, right: 67})
+                    focusedWindow.webContents.send('set-layout-columns', {left: 33, Rechts: 67})
                 }
             },
             {
-                label: 'Left 1:1 Right',
+                label: i18n.__('Left 1:1 Right'),
                 click (item, focusedWindow) {
                     showPaneVisibility(focusedWindow)
-                    focusedWindow.webContents.send('set-layout-columns', {left: 50, right: 50})
+                    focusedWindow.webContents.send('set-layout-columns', {left: 50, Rechts: 50})
                 }
             },
             {
-                label: 'Left 2:1 Right',
+                label: i18n.__('Left 2:1 Right'),
                 click (item, focusedWindow) {
                     showPaneVisibility(focusedWindow)
-                    focusedWindow.webContents.send('set-layout-columns', {left: 67, right: 33})
+                    focusedWindow.webContents.send('set-layout-columns', {left: 67, Rechts: 33})
                 }
             },
             {
-                label: 'Hide Editor Pane',
+                label: i18n.__('Hide Editor Pane'),
                 click (item, focusedWindow) {
                     setEditorPaneVisibility(focusedWindow, false)
                 },
                 visible: true
             },
             {
-                label: 'Show Editor Pane',
+                label: i18n.__('Show Editor Pane'),
                 click (item, focusedWindow) {
                     setEditorPaneVisibility(focusedWindow, true)
                 },
                 visible: false
             },
             {
-                label: 'Hide Preview Pane',
+                label: i18n.__('Hide Preview Pane'),
                 click (item, focusedWindow) {
                     setPreviewPaneVisibility(focusedWindow, false)
                 },
                 visible: true
             },
             {
-                label: 'Show Preview Pane',
+                label: i18n.__('Show Preview Pane'),
                 click (item, focusedWindow) {
                     setPreviewPaneVisibility(focusedWindow, true)
                 },
@@ -141,38 +151,47 @@ const template = [
                 type: 'separator'
             },
             {
+                label: i18n.__('Reset Zoom'),
                 role: 'resetzoom'
             },
             {
+                label: i18n.__('Zoom In'),
                 role: 'zoomin'
             },
             {
+                label: i18n.__('Zoom Out'),
                 role: 'zoomout'
             },
             {
                 type: 'separator'
             },
             {
+                label: i18n.__('Toggle Fullsceen'),
                 role: 'togglefullscreen'
             }
         ]
     },
     {
+        label: i18n.__('Window'),
         role: 'window',
         submenu: [
             {
+                label: i18n.__('Minimize'),
                 role: 'minimize'
             },
             {
+                label: i18n.__('Close'),
+                accelerator: 'CmdOrCtrl+W',
                 role: 'close'
             }
         ]
     },
     {
+        label: i18n.__('Help'),
         role: 'help',
         submenu: [
             {
-                label: 'Learn More',
+                label: i18n.__('Learn More'),
                 click () {
                     require('electron').shell.openExternal('http://electron.atom.io')
                 }
@@ -187,13 +206,14 @@ if (process.platform === 'darwin') {
         label: name,
         submenu: [
             {
-                label: `About ${name}`,
+                label: i18n.__('About'),
                 role: 'about'
             },
             {
                 type: 'separator'
             },
             {
+                label: i18n.__('Services'),
                 role: 'services',
                 submenu: []
             },
@@ -201,18 +221,22 @@ if (process.platform === 'darwin') {
                 type: 'separator'
             },
             {
+                label: i18n.__('Hide'),
                 role: 'hide'
             },
             {
+                label: i18n.__('Hide Others'),
                 role: 'hideothers'
             },
             {
+                label: i18n.__('Unhide'),
                 role: 'unhide'
             },
             {
                 type: 'separator'
             },
             {
+                //label: i18n.__('Quit'),
                 role: 'quit'
             }
         ]
@@ -239,24 +263,24 @@ if (process.platform === 'darwin') {
     // Window menu.
     template[4].submenu = [
         {
-            label: 'Schliessen',
+            label: i18n.__('Close'),
             accelerator: 'CmdOrCtrl+W',
             role: 'close'
         },
         {
-            label: 'Minimieren',
+            label: i18n.__('Minimize'),
             accelerator: 'CmdOrCtrl+M',
             role: 'minimize'
         },
         {
-            label: 'Zoom',
+            label: i18n.__('Zoom'),
             role: 'zoom'
         },
         {
             type: 'separator'
         },
         {
-            label: 'Alle nach vorne bringen',
+            label: i18n.__('Bring All To Front'),
             role: 'front'
         }
     ]

@@ -43,3 +43,8 @@ body {
     overflow-x: hidden;
     padding: 2em 1em;
 }
+
+#preview pre.highlight {
+    background-color: transparent;
+    padding: 0;
+}

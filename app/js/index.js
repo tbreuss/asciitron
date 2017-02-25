@@ -21,6 +21,15 @@ var convertAsciidoc = function (event) {
         var htmldoc = Opal.Asciidoctor.$convert(asciidoc)
         document.getElementById('preview').innerHTML = htmldoc
 
+        var codeBlocks = document.querySelectorAll("pre.highlight code");
+        for (var i = 0; i < codeBlocks.length; i++) {
+            var block = codeBlocks[i];
+            /*if (block.className == '') {
+                block.className = 'hljs text';
+            }*/
+            hljs.highlightBlock(block);
+        }
+
         // Open all links externally
         const links = document.querySelectorAll('#preview a[href]')
         Array.prototype.forEach.call(links, function (link) {
@@ -38,6 +47,18 @@ var convertAsciidoc = function (event) {
 
 var editor = document.getElementById('editor')
 
+editor.addEventListener('paste', function (event) {
+
+    // cancel paste
+    event.preventDefault();
+
+    // get text representation of clipboard
+    var text = event.clipboardData.getData("text/plain");
+
+    // insert text manually
+    document.execCommand("inserttext", false, text);
+})
+
 editor.addEventListener('scroll', function (event) {
     // see: http://stackoverflow.com/questions/2481350/how-to-get-scrollbar-position-with-javascript
     var editor = event.srcElement
@@ -48,7 +69,6 @@ editor.addEventListener('scroll', function (event) {
 
 editor.addEventListener('input', convertAsciidoc)
 editor.dispatchEvent(new Event('input'))
-
 
 
 // IPC Event Handler
