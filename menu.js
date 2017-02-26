@@ -99,24 +99,38 @@ const template = [
                 type: 'separator'
             },
             {
-                label: i18n.__('Left 1:2 Right'),
-                click (item, focusedWindow) {
-                    showPaneVisibility(focusedWindow)
-                    focusedWindow.webContents.send('set-layout-columns', {left: 33, Rechts: 67})
-                }
-            },
-            {
                 label: i18n.__('Left 1:1 Right'),
                 click (item, focusedWindow) {
                     showPaneVisibility(focusedWindow)
-                    focusedWindow.webContents.send('set-layout-columns', {left: 50, Rechts: 50})
+                    focusedWindow.webContents.send('set-layout-columns', {left: 50, right: 50})
+                }
+            },
+            {
+                label: i18n.__('Left 1:2 Right'),
+                click (item, focusedWindow) {
+                    showPaneVisibility(focusedWindow)
+                    focusedWindow.webContents.send('set-layout-columns', {left: 33, right: 67})
+                }
+            },
+            {
+                label: i18n.__('Left 1:3 Right'),
+                click (item, focusedWindow) {
+                    showPaneVisibility(focusedWindow)
+                    focusedWindow.webContents.send('set-layout-columns', {left: 25, right: 75})
                 }
             },
             {
                 label: i18n.__('Left 2:1 Right'),
                 click (item, focusedWindow) {
                     showPaneVisibility(focusedWindow)
-                    focusedWindow.webContents.send('set-layout-columns', {left: 67, Rechts: 33})
+                    focusedWindow.webContents.send('set-layout-columns', {left: 67, right: 33})
+                }
+            },
+            {
+                label: i18n.__('Left 3:1 Right'),
+                click (item, focusedWindow) {
+                    showPaneVisibility(focusedWindow)
+                    focusedWindow.webContents.send('set-layout-columns', {left: 75, right: 25})
                 }
             },
             {
@@ -290,18 +304,18 @@ const menu = Menu.buildFromTemplate(template)
 
 function setEditorPaneVisibility(focusedWindow, visible) {
     focusedWindow.webContents.send('show-editor-pane', visible)
-    menu.items[3].submenu.items[6].visible = visible
-    menu.items[3].submenu.items[7].visible = !visible
-    if (!visible && menu.items[3].submenu.items[9].visible) {
+    menu.items[3].submenu.items[8].visible = visible
+    menu.items[3].submenu.items[9].visible = !visible
+    if (!visible && menu.items[3].submenu.items[11].visible) {
         setPreviewPaneVisibility(focusedWindow, true)
     }
 }
 
 function setPreviewPaneVisibility(focusedWindow, visible) {
     focusedWindow.webContents.send('show-preview-pane', visible)
-    menu.items[3].submenu.items[8].visible = visible
-    menu.items[3].submenu.items[9].visible = !visible
-    if (!visible && menu.items[3].submenu.items[7].visible) {
+    menu.items[3].submenu.items[10].visible = visible
+    menu.items[3].submenu.items[11].visible = !visible
+    if (!visible && menu.items[3].submenu.items[9].visible) {
         setEditorPaneVisibility(focusedWindow, true)
     }
 }
