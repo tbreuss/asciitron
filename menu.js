@@ -14,7 +14,7 @@ const template = [
                 click (item, focusedWindow) {
                     dialog.showOpenDialog({
                         properties: ['openFile'],
-                        filters: [/*{ name: 'GPX', extensions: ['gpx'] }*/]
+                        filters: [{ name: '*', extensions: ['adoc', 'asciidoc'] }]
                     }, function (filePaths) {
                         focusedWindow.webContents.send('read-file', filePaths)
                     })
@@ -24,7 +24,9 @@ const template = [
                 label: i18n.__('Save'),
                 accelerator: 'CmdOrCtrl+S',
                 click (item, focusedWindow) {
-                    dialog.showSaveDialog({}, function (fileName) {
+                    dialog.showSaveDialog({
+                        filters: [{ name: '*', extensions: ['adoc'] }]
+                    }, function (fileName) {
                         focusedWindow.webContents.send('save-file', fileName)
                     })
                 }
