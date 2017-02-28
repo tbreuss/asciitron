@@ -3,6 +3,7 @@ const electron = require('electron')
 const app = electron.app
 const dialog = require('electron').dialog
 var i18n = new(require('./translations/i18n'))
+var currentFilePath = ''
 
 const template = [
     {
@@ -18,6 +19,7 @@ const template = [
                     }, function (filePaths) {
                         if (filePaths) {
                             var filePath = filePaths[0]
+                            currentFilePath = filePath
                             focusedWindow.setTitle(filePath.split('/').pop())
                             focusedWindow.webContents.send('read-file', filePath)
                         }
@@ -28,12 +30,17 @@ const template = [
                 label: i18n.__('Save'),
                 accelerator: 'CmdOrCtrl+S',
                 click (item, focusedWindow) {
+                    if (currentFilePath) {
+                        focusedWindow.webContents.send('save-file', currentFilePath)
+                        return
+                    }
                     dialog.showSaveDialog({
                         filters: [{ name: '*', extensions: ['adoc'] }]
-                    }, function (fileName) {
-                        if (fileName) {
-                            focusedWindow.setTitle(fileName.split('/').pop())
-                            focusedWindow.webContents.send('save-file', fileName)
+                    }, function (filePath) {
+                        if (filePath) {
+                            currentFilePath = filePath
+                            focusedWindow.setTitle(filePath.split('/').pop())
+                            focusedWindow.webContents.send('save-file', filePath)
                         }
                     })
                 }
@@ -83,21 +90,21 @@ const template = [
     {
         label: i18n.__('Show'),
         submenu: [
-            {
+            /*{
                 label: i18n.__('Reload'),
                 accelerator: 'CmdOrCtrl+R',
                 click (item, focusedWindow) {
                     if (focusedWindow) focusedWindow.reload()
                 }
-            },
-            {
+            },*/
+            /*{
                 label: i18n.__('Toggle Developer Tools'),
                 role: 'toggledevtools',
                 accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
                 click (item, focusedWindow) {
                     if (focusedWindow) focusedWindow.webContents.toggleDevTools()
                 }
-            },
+            },*/
             {
                 type: 'separator'
             },
@@ -220,10 +227,10 @@ const template = [
 if (process.platform === 'darwin') {
     const name = app.getName()
     template.unshift({
-        label: name,
+        label: name + 'xxx',
         submenu: [
             {
-                label: i18n.__('About'),
+                label: i18n.__('About') + ' ' + name,
                 role: 'about'
             },
             {
@@ -253,7 +260,7 @@ if (process.platform === 'darwin') {
                 type: 'separator'
             },
             {
-                //label: i18n.__('Quit'),
+                label: i18n.__('Quit'),
                 role: 'quit'
             }
         ]
@@ -279,11 +286,6 @@ if (process.platform === 'darwin') {
     */
     // Window menu.
     template[4].submenu = [
-        {
-            label: i18n.__('Close'),
-            accelerator: 'CmdOrCtrl+W',
-            role: 'close'
-        },
         {
             label: i18n.__('Minimize'),
             accelerator: 'CmdOrCtrl+M',
