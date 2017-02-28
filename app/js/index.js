@@ -67,6 +67,21 @@ editor.addEventListener('scroll', function (event) {
     preview.scrollTop = editorScrollPosition * (preview.scrollHeight - preview.clientHeight)
 })
 
+editor.addEventListener('keydown', function(e){
+    if (e.shiftKey && e.keyCode==9) {
+        //document.execCommand('outdent',true,null);
+        e.preventDefault();
+        return
+    }
+    if(e.keyCode==9){
+        //document.execCommand('styleWithCSS', true, null);
+        //document.execCommand('indent', true, null);
+        //document.execCommand('insertHTML', false, '&#009');
+        e.preventDefault();
+        return
+    }
+})
+
 editor.addEventListener('input', convertAsciidoc)
 editor.dispatchEvent(new Event('input'))
 
@@ -83,16 +98,13 @@ ipcRenderer.on('save-file', (event, fileName) => {
     if (fileName) {
         var data = document.getElementById('editor').innerText
         fs.writeFile(fileName, data, {}, function () {
-            alert('Datei wurde gespeichert.')
         })
-    } else {
-        console.log("No file selected")
     }
 })
 
-ipcRenderer.on('read-file', (event, filePaths) => {
-    if (filePaths) {
-        fs.readFile(filePaths[0], 'utf-8', function (err, data) {
+ipcRenderer.on('read-file', (event, fileName) => {
+    if (fileName) {
+        fs.readFile(fileName, 'utf-8', function (err, data) {
             if (err) {
                 alert("An error ocurred reading the file :" + err.message)
                 return
@@ -101,8 +113,6 @@ ipcRenderer.on('read-file', (event, filePaths) => {
             editor.innerText = data
             editor.dispatchEvent(new Event('input'))
         })
-    } else {
-        console.log("No file selected")
     }
 })
 

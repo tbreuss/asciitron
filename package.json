@@ -1,23 +1,59 @@
 {
   "name": "asciitron",
+  "productName": "Asciitron",
+  "description": "Simple Asciidoctor Editor built with Electron and Asciidoctor.js",
   "version": "0.1.0",
-  "description": "Asciidoctor-Editor",
+  "author": "Thomas Breuss",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "pack": "build --dir",
+    "dist": "build",
+    "postinstall": "install-app-deps",
+    "package-mac": "electron-packager . --overwrite --asar=true --platform=darwin --arch=x64 --icon=build/icon.icns --prune=true --ignore=bower_components --out=release-builds"
   },
-  "repository": "https://github.com/tbreuss/asciidoctor-electron",
+  "build": {
+    "asar": true,
+    "appId": "ch.tebe.asciitron",
+    "mac": {
+      "category": "public.app-category.utilities"
+    },
+    "dmg": {
+      "contents": [
+        {
+          "x": 110,
+          "y": 150
+        },
+        {
+          "x": 240,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ]
+    }
+  },
+  "repository": {
+    "tpye": "git",
+    "url": "https://github.com/tbreuss/asciitron"
+  },
   "keywords": [
     "Asciidoctor",
-    "Editor",
     "Cross Platform",
+    "Editor",
     "Electron"
   ],
-  "author": "GitHub",
   "license": "CC0-1.0",
   "devDependencies": {
-    "electron": "^1.4.1"
+    "electron": "^1.4.1",
+    "electron-builder": "^14.5.1",
+    "electron-packager": "^8.5.2"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }

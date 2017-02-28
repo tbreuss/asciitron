@@ -33,6 +33,7 @@ body {
     font-size: 1.1em;
     padding: 2em 1em;
     line-height: 1.4em;
+    white-space: pre-wrap
 }
 
 #preview {

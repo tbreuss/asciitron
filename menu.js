@@ -16,7 +16,11 @@ const template = [
                         properties: ['openFile'],
                         filters: [{ name: '*', extensions: ['adoc', 'asciidoc'] }]
                     }, function (filePaths) {
-                        focusedWindow.webContents.send('read-file', filePaths)
+                        if (filePaths) {
+                            var filePath = filePaths[0]
+                            focusedWindow.setTitle(filePath.split('/').pop())
+                            focusedWindow.webContents.send('read-file', filePath)
+                        }
                     })
                 }
             },
@@ -27,14 +31,11 @@ const template = [
                     dialog.showSaveDialog({
                         filters: [{ name: '*', extensions: ['adoc'] }]
                     }, function (fileName) {
-                        focusedWindow.webContents.send('save-file', fileName)
+                        if (fileName) {
+                            focusedWindow.setTitle(fileName.split('/').pop())
+                            focusedWindow.webContents.send('save-file', fileName)
+                        }
                     })
-                }
-            },
-            {
-                label: i18n.__('Test'),
-                click (item, focusedWindow, event) {
-                    console.log('Test clicked')
                 }
             }
         ]

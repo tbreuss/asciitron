@@ -14,7 +14,13 @@ let mainWindow
 function createWindow() {
 
     // Create the browser window.
-    mainWindow = new BrowserWindow({width: 800, height: 600})
+    mainWindow = new BrowserWindow({
+        frame: true,
+        /*titleBarStyle: 'hidden', */
+        width: 800,
+        height: 600,
+        title: ''
+    })
 
     // and load the index.html of the app.
     mainWindow.loadURL(url.format({
@@ -24,7 +30,7 @@ function createWindow() {
     }))
 
     // Open the DevTools.
-    mainWindow.webContents.openDevTools()
+    // mainWindow.webContents.openDevTools()
 
     // Emitted when the window is closed.
     mainWindow.on('closed', function () {
@@ -46,13 +52,11 @@ function createWindow() {
     mainWindow.on('hide', function () {
         var menu = electron.Menu.getApplicationMenu()
         menu.items[1].submenu.items[1].enabled = false
-        console.log('hide')
     })
 
     mainWindow.on('show', function () {
         var menu = electron.Menu.getApplicationMenu()
         menu.items[1].submenu.items[1].enabled = true
-        console.log('show')
     })
 
     require('./menu')
