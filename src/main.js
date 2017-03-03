@@ -32,7 +32,7 @@ function createWindow() {
     // Open the DevTools.
     //mainWindow.webContents.openDevTools()
     mainWindow.webContents.on("devtools-opened", () => {
-        win.webContents.closeDevTools();
+        mainWindow.webContents.closeDevTools();
     });
 
     // Emitted when the window is closed.
