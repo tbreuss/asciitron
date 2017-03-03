@@ -10,13 +10,17 @@
     "pack": "build --dir",
     "dist": "build",
     "postinstall": "install-app-deps",
-    "package-mac": "electron-packager . --overwrite --asar=true --platform=darwin --arch=x64 --icon=build/icon.icns --prune=true --ignore=bower_components --out=release-builds",
-    "package-win": "electron-packager . --overwrite --asar=true --platform=win32 --arch=ia32 --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Asciitron\"",
-    "package-linux": "electron-packager . --overwrite --asar=true --platform=linux --arch=x64 --prune=true --out=release-builds"
+    "package-mac": "electron-packager . --overwrite --asar=true --platform=darwin --arch=x64 --icon=src/assets/icons/icon.icns --prune=true --ignore=bower_components --out=dist/packager/",
+    "package-win": "electron-packager . --overwrite --asar=true --platform=win32 --arch=ia32 --prune=true --out=dist/packager --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Asciitron\"",
+    "package-linux": "electron-packager . --overwrite --asar=true --platform=linux --arch=x64 --prune=true --out=dist/packager"
   },
   "build": {
     "asar": true,
     "appId": "ch.tebe.asciitron",
+    "directories": {
+      "buildResources": "src/assets/icons",
+      "output": "dist/builder"
+    },
     "mac": {
       "category": "public.app-category.utilities"
     },

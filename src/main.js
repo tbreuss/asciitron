@@ -24,15 +24,15 @@ function createWindow() {
 
     // and load the index.html of the app.
     mainWindow.loadURL(url.format({
-        pathname: path.join(__dirname, 'index.html'),
+        pathname: path.join(__dirname, 'windows/index.html'),
         protocol: 'file:',
         slashes: true
     }))
 
     // Open the DevTools.
-    //mainWindow.webContents.openDevTools()
+    mainWindow.webContents.openDevTools()
     mainWindow.webContents.on("devtools-opened", () => {
-        mainWindow.webContents.closeDevTools();
+//        mainWindow.webContents.closeDevTools();
     });
 
     // Emitted when the window is closed.
