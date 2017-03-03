@@ -24,13 +24,13 @@ function createWindow() {
 
     // and load the index.html of the app.
     mainWindow.loadURL(url.format({
-        pathname: path.join(__dirname, 'app/index.html'),
+        pathname: path.join(__dirname, 'index.html'),
         protocol: 'file:',
         slashes: true
     }))
 
     // Open the DevTools.
-    // mainWindow.webContents.openDevTools()
+    //mainWindow.webContents.openDevTools()
     mainWindow.webContents.on("devtools-opened", () => {
         win.webContents.closeDevTools();
     });
