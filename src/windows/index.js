@@ -6,6 +6,10 @@ const {ipcRenderer} = require('electron')
 const fs = require('fs')
 const shell = require('electron').shell
 
+if (window.Worker) {
+    console.log('WebWorker installed')
+}
+
 var delay = (function () {
     var timer = 0
     return function (callback, ms) {
@@ -14,20 +18,44 @@ var delay = (function () {
     }
 })()
 
-var convertAsciidoc = function (event) {
-    var $this = this
+var margin = 10
+var padding = 10
+var pause = 500
+var editor = ace.edit("editor")
+
+editor.setOptions({
+    // fontSize: 13,
+});
+
+editor.$blockScrolling = Infinity
+editor.setTheme("ace/theme/twilight")
+editor.session.setMode("ace/mode/asciidoc")
+editor.session.setUseWrapMode(true)
+editor.renderer.setShowGutter(false)
+editor.renderer.setPadding(padding)
+editor.renderer.setScrollMargin(margin, margin)
+editor.renderer.setPrintMarginColumn(false)
+
+
+editor.session.on('change', function(e) {
+
+    console.log('change')
+
     delay(function () {
-        var asciidoc = $this.innerText
+
+        console.log('delayed')
+
+        var asciidoc = editor.session.getValue()
         var htmldoc = Opal.Asciidoctor.$convert(asciidoc)
         document.getElementById('preview').innerHTML = htmldoc
 
-        var codeBlocks = document.querySelectorAll("pre.highlight code");
+        var codeBlocks = document.querySelectorAll("pre.highlight code")
         for (var i = 0; i < codeBlocks.length; i++) {
-            var block = codeBlocks[i];
+            var block = codeBlocks[i]
             /*if (block.className == '') {
-                block.className = 'hljs text';
-            }*/
-            hljs.highlightBlock(block);
+             block.className = 'hljs text'
+             }*/
+            hljs.highlightBlock(block)
         }
 
         // Open all links externally
@@ -42,61 +70,29 @@ var convertAsciidoc = function (event) {
             }
         })
 
-    }, 200)
-}
-
-var editor = document.getElementById('editor')
-
-editor.addEventListener('paste', function (event) {
-
-    // cancel paste
-    event.preventDefault();
-
-    // get text representation of clipboard
-    var text = event.clipboardData.getData("text/plain");
-
-    // insert text manually
-    document.execCommand("inserttext", false, text);
+    }, pause)
 })
 
-editor.addEventListener('scroll', function (event) {
-    // see: http://stackoverflow.com/questions/2481350/how-to-get-scrollbar-position-with-javascript
-    var editor = event.srcElement
+editor.session.on('changeScrollTop', function(scrollTop) {
+    var lines = editor.session.getScreenLength()
+    var scrollHeight = editor.renderer.lineHeight * lines
+    var clientHeight = document.querySelector('#editor').clientHeight
+    var editorScrollPosition = (scrollTop + margin) / (scrollHeight - clientHeight + (2 * margin))
     var preview = document.getElementById('preview')
-    var editorScrollPosition = editor.scrollTop / (editor.scrollHeight - editor.clientHeight)
     preview.scrollTop = editorScrollPosition * (preview.scrollHeight - preview.clientHeight)
 })
 
-editor.addEventListener('keydown', function(e){
-    if (e.shiftKey && e.keyCode==9) {
-        //document.execCommand('outdent',true,null);
-        e.preventDefault();
-        return
-    }
-    if(e.keyCode==9){
-        //document.execCommand('styleWithCSS', true, null);
-        //document.execCommand('indent', true, null);
-        //document.execCommand('insertHTML', false, '&#009');
-        e.preventDefault();
-        return
-    }
-})
-
-editor.addEventListener('input', convertAsciidoc)
-editor.dispatchEvent(new Event('input'))
 
 
 // IPC Event Handler
 
 ipcRenderer.on('replace-content', (event, arg) => {
-    var editor = document.getElementById('editor')
-    editor.innerText = arg
-    editor.dispatchEvent(new Event('input'))
+    editor.session.setValue(arg)
 })
 
 ipcRenderer.on('save-file', (event, fileName) => {
     if (fileName) {
-        var data = document.getElementById('editor').innerText
+        var data = editor.session.getValue()
         fs.writeFile(fileName, data, {}, function () {
         })
     }
@@ -109,9 +105,7 @@ ipcRenderer.on('read-file', (event, fileName) => {
                 alert("An error ocurred reading the file :" + err.message)
                 return
             }
-            var editor = document.getElementById('editor')
-            editor.innerText = data
-            editor.dispatchEvent(new Event('input'))
+            editor.session.setValue(data)
         })
     }
 })
