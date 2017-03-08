@@ -6,8 +6,8 @@ const {ipcRenderer} = require('electron')
 const fs = require('fs')
 const shell = require('electron').shell
 
-var wait = (function () {
-    var timer = 0
+let wait = (function () {
+    let timer = 0
     return function (callback, ms) {
         clearTimeout(timer)
         timer = setTimeout(callback, ms)

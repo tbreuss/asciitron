@@ -53,12 +53,12 @@ function createWindow() {
     })
 
     mainWindow.on('hide', function () {
-        var menu = electron.Menu.getApplicationMenu()
+        let menu = electron.Menu.getApplicationMenu()
         menu.items[1].submenu.items[1].enabled = false
     })
 
     mainWindow.on('show', function () {
-        var menu = electron.Menu.getApplicationMenu()
+        let menu = electron.Menu.getApplicationMenu()
         menu.items[1].submenu.items[1].enabled = true
     })
 

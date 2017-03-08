@@ -2,8 +2,8 @@ const {Menu} = require('electron')
 const electron = require('electron')
 const app = electron.app
 const dialog = require('electron').dialog
-var i18n = new(require('./translations/i18n'))
-var currentFilePath = ''
+let i18n = new(require('./translations/i18n'))
+let currentFilePath = ''
 
 const template = [
     {
@@ -18,7 +18,7 @@ const template = [
                         filters: [{ name: '*', extensions: ['adoc', 'asciidoc'] }]
                     }, function (filePaths) {
                         if (filePaths) {
-                            var filePath = filePaths[0]
+                            let filePath = filePaths[0]
                             currentFilePath = filePath
                             focusedWindow.setTitle(filePath.split('/').pop())
                             focusedWindow.webContents.send('read-file', filePath)
