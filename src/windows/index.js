@@ -6,11 +6,7 @@ const {ipcRenderer} = require('electron')
 const fs = require('fs')
 const shell = require('electron').shell
 
-if (window.Worker) {
-    console.log('WebWorker installed')
-}
-
-var delay = (function () {
+var wait = (function () {
     var timer = 0
     return function (callback, ms) {
         clearTimeout(timer)
@@ -18,14 +14,41 @@ var delay = (function () {
     }
 })()
 
-var margin = 10
-var padding = 10
-var pause = 500
-var editor = ace.edit("editor")
+let margin = 10
+let padding = 10
+let editor = ace.edit("editor")
+let worker = new Worker('worker.js');
 
-editor.setOptions({
-    // fontSize: 13,
-});
+
+worker.onmessage = function(event) {
+
+    // Converted data from worker
+    document.getElementById('preview').innerHTML = event.data
+
+    // Highlight JS
+    let codeBlocks = document.querySelectorAll("pre.highlight code")
+    for (let i = 0; i < codeBlocks.length; i++) {
+        let block = codeBlocks[i]
+        /*if (block.className == '') {
+         block.className = 'hljs text'
+         }*/
+        hljs.highlightBlock(block)
+    }
+
+    // Open all links externally
+    const links = document.querySelectorAll('#preview a[href]')
+    Array.prototype.forEach.call(links, function (link) {
+        const url = link.getAttribute('href')
+        if (url.indexOf('http') === 0) {
+            link.addEventListener('click', function (e) {
+                e.preventDefault()
+                shell.openExternal(url)
+            })
+        }
+    })
+
+};
+
 
 editor.$blockScrolling = Infinity
 editor.setTheme("ace/theme/twilight")
@@ -38,47 +61,18 @@ editor.renderer.setPrintMarginColumn(false)
 
 
 editor.session.on('change', function(e) {
-
-    console.log('change')
-
-    delay(function () {
-
-        console.log('delayed')
-
-        var asciidoc = editor.session.getValue()
-        var htmldoc = Opal.Asciidoctor.$convert(asciidoc)
-        document.getElementById('preview').innerHTML = htmldoc
-
-        var codeBlocks = document.querySelectorAll("pre.highlight code")
-        for (var i = 0; i < codeBlocks.length; i++) {
-            var block = codeBlocks[i]
-            /*if (block.className == '') {
-             block.className = 'hljs text'
-             }*/
-            hljs.highlightBlock(block)
-        }
-
-        // Open all links externally
-        const links = document.querySelectorAll('#preview a[href]')
-        Array.prototype.forEach.call(links, function (link) {
-            const url = link.getAttribute('href')
-            if (url.indexOf('http') === 0) {
-                link.addEventListener('click', function (e) {
-                    e.preventDefault()
-                    shell.openExternal(url)
-                })
-            }
-        })
-
-    }, pause)
+    wait(function () {
+        let asciidoc = editor.session.getValue()
+        worker.postMessage([asciidoc])
+    }, 500)
 })
 
 editor.session.on('changeScrollTop', function(scrollTop) {
-    var lines = editor.session.getScreenLength()
-    var scrollHeight = editor.renderer.lineHeight * lines
-    var clientHeight = document.querySelector('#editor').clientHeight
-    var editorScrollPosition = (scrollTop + margin) / (scrollHeight - clientHeight + (2 * margin))
-    var preview = document.getElementById('preview')
+    let lines = editor.session.getScreenLength()
+    let scrollHeight = editor.renderer.lineHeight * lines
+    let clientHeight = document.querySelector('#editor').clientHeight
+    let editorScrollPosition = (scrollTop + margin) / (scrollHeight - clientHeight + (2 * margin))
+    let preview = document.getElementById('preview')
     preview.scrollTop = editorScrollPosition * (preview.scrollHeight - preview.clientHeight)
 })
 
@@ -92,7 +86,7 @@ ipcRenderer.on('replace-content', (event, arg) => {
 
 ipcRenderer.on('save-file', (event, fileName) => {
     if (fileName) {
-        var data = editor.session.getValue()
+        let data = editor.session.getValue()
         fs.writeFile(fileName, data, {}, function () {
         })
     }
@@ -111,8 +105,8 @@ ipcRenderer.on('read-file', (event, fileName) => {
 })
 
 ipcRenderer.on('set-layout-columns', (event, config) => {
-    var editor = document.getElementById('editor')
-    var preview = document.getElementById('preview')
+    let editor = document.getElementById('editor')
+    let preview = document.getElementById('preview')
     editor.style.flexBasis = config.left + '%'
     editor.style.display = 'block'
     preview.style.flexBasis = config.right + '%'
@@ -120,7 +114,7 @@ ipcRenderer.on('set-layout-columns', (event, config) => {
 })
 
 ipcRenderer.on('show-editor-pane', (event, visible) => {
-    var editor = document.getElementById('editor')
+    let editor = document.getElementById('editor')
     if (visible) {
         editor.style.display = 'block'
     } else {
@@ -129,7 +123,7 @@ ipcRenderer.on('show-editor-pane', (event, visible) => {
 })
 
 ipcRenderer.on('show-preview-pane', (event, visible) => {
-    var editor = document.getElementById('preview')
+    let editor = document.getElementById('preview')
     if (visible) {
         editor.style.display = 'block'
     } else {
