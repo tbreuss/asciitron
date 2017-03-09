@@ -12,11 +12,11 @@ const url = require('url')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow
-let settingsWindow
+let content = null
+let mainWindow = null
+let settingsWindow = null
 
-function createSettingswindow()
-{
+function createSettingswindow() {
     if (!mainWindow) {
         return
     }
@@ -45,9 +45,8 @@ function createSettingswindow()
     settingsWindow.webContents.openDevTools()
 
     // Emitted when the window is closed.
-    settingsWindow.on('closed', function () {
+    settingsWindow.on('closed', () => {
         settingsWindow = null
-        console.log('settings window closed')
     })
 }
 
@@ -60,6 +59,7 @@ ipcMain.on('show-settings-windows', () => {
 ipcMain.on('hide-settings-windows', () => {
     if (settingsWindow) {
         settingsWindow.close()
+        mainWindow.webContents.reload()
     }
 })
 
@@ -107,25 +107,23 @@ function createWindow() {
     });
 
     mainWindow.on('resize', () => {
-        let { width, height, x, y} = mainWindow.getBounds();
+        let {width, height, x, y} = mainWindow.getBounds();
         store.set('window.width', width)
         store.set('window.height', height)
         store.set('window.x', x)
         store.set('window.y', y)
-        //console.log(width, height, x, y)
     });
 
     mainWindow.on('move', () => {
-        let { width, height, x, y} = mainWindow.getBounds();
+        let {width, height, x, y} = mainWindow.getBounds();
         store.set('window.width', width)
         store.set('window.height', height)
         store.set('window.x', x)
         store.set('window.y', y)
-        //console.log(width, height, x, y)
     });
 
     // Emitted when the window is closed.
-    mainWindow.on('closed', function () {
+    mainWindow.on('closed', () => {
         // Dereference the window object, usually you would store windows
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
@@ -142,12 +140,12 @@ function createWindow() {
         )
     })
 
-    mainWindow.on('hide', function () {
+    mainWindow.on('hide', () => {
         let menu = electron.Menu.getApplicationMenu()
         menu.items[1].submenu.items[1].enabled = false
     })
 
-    mainWindow.on('show', function () {
+    mainWindow.on('show', () => {
         let menu = electron.Menu.getApplicationMenu()
         menu.items[1].submenu.items[1].enabled = true
     })
@@ -161,12 +159,12 @@ function createWindow() {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', function () {
+app.on('ready', () => {
     createWindow()
 })
 
 // Quit when all windows are closed.
-app.on('window-all-closed', function () {
+app.on('window-all-closed', () => {
 
     store.sort()
     store.store()
@@ -178,7 +176,7 @@ app.on('window-all-closed', function () {
     }
 })
 
-app.on('activate', function () {
+app.on('activate', () => {
     // On OS X it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (mainWindow === null) {

@@ -240,7 +240,7 @@ if (process.platform === 'darwin') {
             },
             {
                 label: i18n.__('Settings'),
-                click (item, focusedWindow) {
+                click () {
                     createSettingswindow()
                 }
             },
@@ -342,3 +342,4 @@ function showPaneVisibility(focusedWindow) {
 }
 
 Menu.setApplicationMenu(menu)
+
