@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Settings</title>
+    <link rel="stylesheet" href="../vendor/photon/css/photon.min.css">
+    <style>
+        .window {
+            background-color: #ECECEC;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="window">
+
+    <form>
+
+        <h4>Editor</h4>
+
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="editor.gutter"> Show gutter
+            </label>
+        </div>
+
+        <select class="form-control" name="editor.theme">
+            <optgroup label="Bright">
+                <option name="ace/theme/chrome">Chrome</option>
+                <option name="ace/theme/clouds">Clouds</option>
+                <option name="ace/theme/crimson_editor">Crimson Editor</option>
+                <option name="ace/theme/dawn">Dawn</option>
+                <option name="ace/theme/dreamweaver">Dreamweaver</option>
+                <option name="ace/theme/eclipse">Eclipse</option>
+                <option name="ace/theme/github">GitHub</option>
+                <option name="ace/theme/iplastic">IPlastic</option>
+                <option name="ace/theme/solarized_light">Solarized Light</option>
+                <option name="ace/theme/textmate">TextMate</option>
+                <option name="ace/theme/tomorrow">Tomorrow</option>
+                <option name="ace/theme/xcode">XCode</option>
+                <option name="ace/theme/kuroir">Kuroir</option>
+                <option name="ace/theme/katzenmilch">KatzenMilch</option>
+                <option name="ace/theme/sqlserver">SQL Server</option>
+            </optgroup>
+            <optgroup label="Dark">
+                <option name="ace/theme/ambiance">Ambiance</option>
+                <option name="ace/theme/chaos">Chaos</option>
+                <option name="ace/theme/clouds_midnight">Clouds Midnight</option>
+                <option name="ace/theme/cobalt">Cobalt</option>
+                <option name="ace/theme/gruvbox">Gruvbox</option>
+                <option name="ace/theme/idle_fingers">idle Fingers</option>
+                <option name="ace/theme/kr_theme">krTheme</option>
+                <option name="ace/theme/merbivore">Merbivore</option>
+                <option name="ace/theme/merbivore_soft">Merbivore Soft</option>
+                <option name="ace/theme/mono_industrial">Mono Industrial</option>
+                <option name="ace/theme/monokai">Monokai</option>
+                <option name="ace/theme/pastel_on_dark">Pastel on dark</option>
+                <option name="ace/theme/solarized_dark">Solarized Dark</option>
+                <option name="ace/theme/terminal">Terminal</option>
+                <option name="ace/theme/tomorrow_night">Tomorrow Night</option>
+                <option name="ace/theme/tomorrow_night_blue">Tomorrow Night Blue</option>
+                <option name="ace/theme/tomorrow_night_bright">Tomorrow Night Bright</option>
+                <option name="ace/theme/tomorrow_night_eighties">Tomorrow Night 80s</option>
+                <option name="ace/theme/twilight">Twilight</option>
+                <option name="ace/theme/vibrant_ink">Vibrant Ink</option>
+            </optgroup>
+        </select>
+
+        <h4>Preview</h4>
+
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="preview.highlightjs"> Highlight.js
+            </label>
+        </div>
+
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="preview.links_in_new_window"> Open links in new window
+            </label>
+        </div>
+
+        <div class="form-actions">
+            <button id="cancelButton" class="btn btn-form btn-default">Cancel</button>
+            <button id="saveButton" class="btn btn-form btn-primary">OK</button>
+        </div>
+
+    </form>
+
+</div>
+<script>
+    require('./settings.js')
+</script>
+</body>
+</html>

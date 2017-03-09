@@ -2,6 +2,8 @@ const {Menu} = require('electron')
 const electron = require('electron')
 const app = electron.app
 const dialog = require('electron').dialog
+const createSettingswindow = require('./main').createSettingswindow
+
 let i18n = new(require('./translations/i18n'))
 let currentFilePath = ''
 
@@ -227,11 +229,20 @@ const template = [
 if (process.platform === 'darwin') {
     const name = app.getName()
     template.unshift({
-        label: name + 'xxx',
+        //label: name,
         submenu: [
             {
                 label: i18n.__('About') + ' ' + name,
                 role: 'about'
+            },
+            {
+                type: 'separator'
+            },
+            {
+                label: i18n.__('Settings'),
+                click (item, focusedWindow) {
+                    createSettingswindow()
+                }
             },
             {
                 type: 'separator'

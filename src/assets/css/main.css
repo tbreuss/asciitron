@@ -25,8 +25,8 @@ body {
     height: 100%;
     display: block;
     flex: 1 1 50%;
-    background: #2d2d2d;
-    color: #cccccc;
+    /*background: #2d2d2d;*/
+    /*color: #cccccc;*/
     overflow: hidden;
     white-space: pre-wrap;
     font-size: 13px;

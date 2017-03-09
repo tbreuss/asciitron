@@ -5,6 +5,7 @@
 const {ipcRenderer} = require('electron')
 const fs = require('fs')
 const shell = require('electron').shell
+const store = require('electron').remote.getGlobal('store')
 
 let wait = (function () {
     let timer = 0
@@ -20,54 +21,64 @@ let editor = ace.edit("editor")
 let worker = new Worker('worker.js');
 
 
-worker.onmessage = function(event) {
+worker.onmessage = function (event) {
 
     // Converted data from worker
     document.getElementById('preview').innerHTML = event.data
 
-    // Highlight JS
-    let codeBlocks = document.querySelectorAll("pre.highlight code")
-    for (let i = 0; i < codeBlocks.length; i++) {
-        let block = codeBlocks[i]
-        /*if (block.className == '') {
-         block.className = 'hljs text'
-         }*/
-        hljs.highlightBlock(block)
+    if (store.get('preview.highlightjs') === true) {
+
+        console.log('preview.highlightjs')
+
+        // Highlight JS
+        let codeBlocks = document.querySelectorAll("pre.highlight code")
+        for (let i = 0; i < codeBlocks.length; i++) {
+            let block = codeBlocks[i]
+            /*if (block.className == '') {
+             block.className = 'hljs text'
+             }*/
+            hljs.highlightBlock(block)
+        }
+
     }
 
-    // Open all links externally
-    const links = document.querySelectorAll('#preview a[href]')
-    Array.prototype.forEach.call(links, function (link) {
-        const url = link.getAttribute('href')
-        if (url.indexOf('http') === 0) {
-            link.addEventListener('click', function (e) {
-                e.preventDefault()
-                shell.openExternal(url)
-            })
-        }
-    })
+    if (store.get('preview.links_in_new_window') === true) {
+
+        // Open all links externally
+        const links = document.querySelectorAll('#preview a[href]')
+        Array.prototype.forEach.call(links, function (link) {
+            const url = link.getAttribute('href')
+            if (url.indexOf('http') === 0) {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault()
+                    shell.openExternal(url)
+                })
+            }
+        })
+
+    }
 
 };
 
 
 editor.$blockScrolling = Infinity
-editor.setTheme("ace/theme/twilight")
-editor.session.setMode("ace/mode/asciidoc")
+editor.setTheme(store.get('editor.theme'))
+editor.session.setMode('ace/mode/asciidoc')
 editor.session.setUseWrapMode(true)
-editor.renderer.setShowGutter(false)
+editor.renderer.setShowGutter(store.get('editor.gutter'))
 editor.renderer.setPadding(padding)
 editor.renderer.setScrollMargin(margin, margin)
 editor.renderer.setPrintMarginColumn(false)
 
 
-editor.session.on('change', function(e) {
+editor.session.on('change', function (e) {
     wait(function () {
         let asciidoc = editor.session.getValue()
         worker.postMessage([asciidoc])
     }, 500)
 })
 
-editor.session.on('changeScrollTop', function(scrollTop) {
+editor.session.on('changeScrollTop', function (scrollTop) {
     let lines = editor.session.getScreenLength()
     let scrollHeight = editor.renderer.lineHeight * lines
     let clientHeight = document.querySelector('#editor').clientHeight
@@ -75,7 +86,6 @@ editor.session.on('changeScrollTop', function(scrollTop) {
     let preview = document.getElementById('preview')
     preview.scrollTop = editorScrollPosition * (preview.scrollHeight - preview.clientHeight)
 })
-
 
 
 // IPC Event Handler
