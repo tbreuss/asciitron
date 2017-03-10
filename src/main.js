@@ -1,3 +1,5 @@
+"use strict"
+
 const electron = require('electron')
 const Store = require('./store')
 const {ipcMain} = require('electron')
@@ -72,6 +74,7 @@ global.store = new Store({
         "editor.theme": "ace/theme/twilight",
         "editor.gutter": false,
         "preview.highlightjs": true,
+        "preview.highlightjs.theme": "default",
         "preview.links_in_new_window": true
     }
 });

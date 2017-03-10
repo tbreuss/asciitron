@@ -1,3 +1,5 @@
+"use strict"
+
 const {ipcRenderer} = require('electron')
 const store = require('electron').remote.getGlobal('store')
 
@@ -5,6 +7,7 @@ const elements = {
     "editor.theme": "select",
     "editor.gutter": "checkbox",
     "preview.highlightjs": "checkbox",
+    "preview.highlightjs.theme": "select",
     "preview.links_in_new_window": "checkbox"
 }
 

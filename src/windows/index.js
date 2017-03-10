@@ -1,19 +1,14 @@
 // This file is required by the index.html file and will
 // be executed in the renderer process for that window.
 // All of the Node.js APIs are available in this process.
+"use strict"
 
 const {ipcRenderer} = require('electron')
 const fs = require('fs')
 const shell = require('electron').shell
 const store = require('electron').remote.getGlobal('store')
-
-let wait = (function () {
-    let timer = 0
-    return function (callback, ms) {
-        clearTimeout(timer)
-        timer = setTimeout(callback, ms)
-    }
-})()
+const asset = require('../lib/asset')
+const util = require('../lib/util')
 
 let margin = 10
 let padding = 10
@@ -28,7 +23,9 @@ worker.onmessage = function (event) {
 
     if (store.get('preview.highlightjs') === true) {
 
-        console.log('preview.highlightjs')
+        //console.log('preview.highlightjs')
+
+        asset.addCSS('../vendor/highlight/styles/' + store.get('preview.highlightjs.theme') + '.css')
 
         // Highlight JS
         let codeBlocks = document.querySelectorAll("pre.highlight code")
@@ -72,7 +69,7 @@ editor.renderer.setPrintMarginColumn(false)
 
 
 editor.session.on('change', function (e) {
-    wait(function () {
+    util.wait(function () {
         let asciidoc = editor.session.getValue()
         worker.postMessage([asciidoc])
     }, 500)
@@ -125,18 +122,10 @@ ipcRenderer.on('set-layout-columns', (event, config) => {
 
 ipcRenderer.on('show-editor-pane', (event, visible) => {
     let editor = document.getElementById('editor')
-    if (visible) {
-        editor.style.display = 'block'
-    } else {
-        editor.style.display = 'none'
-    }
+    editor.style.display = visible ? 'block' : 'none'
 })
 
 ipcRenderer.on('show-preview-pane', (event, visible) => {
     let editor = document.getElementById('preview')
-    if (visible) {
-        editor.style.display = 'block'
-    } else {
-        editor.style.display = 'none'
-    }
+    editor.style.display = visible ? 'block': 'none'
 })
