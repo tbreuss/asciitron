@@ -16,7 +16,7 @@ let editor = ace.edit("editor")
 let worker = new Worker('worker.js');
 
 
-worker.onmessage = function (event) {
+worker.onmessage = (event) => {
 
     // Converted data from worker
     document.getElementById('preview').innerHTML = event.data
@@ -43,10 +43,10 @@ worker.onmessage = function (event) {
 
         // Open all links externally
         const links = document.querySelectorAll('#preview a[href]')
-        Array.prototype.forEach.call(links, function (link) {
+        Array.prototype.forEach.call(links, (link) => {
             const url = link.getAttribute('href')
             if (url.indexOf('http') === 0) {
-                link.addEventListener('click', function (e) {
+                link.addEventListener('click', (e) => {
                     e.preventDefault()
                     shell.openExternal(url)
                 })
@@ -68,14 +68,14 @@ editor.renderer.setScrollMargin(margin, margin)
 editor.renderer.setPrintMarginColumn(false)
 
 
-editor.session.on('change', function (e) {
-    util.wait(function () {
+editor.session.on('change', () => {
+    util.wait(() => {
         let asciidoc = editor.session.getValue()
         worker.postMessage([asciidoc])
     }, 500)
 })
 
-editor.session.on('changeScrollTop', function (scrollTop) {
+editor.session.on('changeScrollTop', (scrollTop) => {
     let lines = editor.session.getScreenLength()
     let scrollHeight = editor.renderer.lineHeight * lines
     let clientHeight = document.querySelector('#editor').clientHeight
@@ -94,14 +94,14 @@ ipcRenderer.on('replace-content', (event, arg) => {
 ipcRenderer.on('save-file', (event, fileName) => {
     if (fileName) {
         let data = editor.session.getValue()
-        fs.writeFile(fileName, data, {}, function () {
+        fs.writeFile(fileName, data, {}, () => {
         })
     }
 })
 
 ipcRenderer.on('read-file', (event, fileName) => {
     if (fileName) {
-        fs.readFile(fileName, 'utf-8', function (err, data) {
+        fs.readFile(fileName, 'utf-8', (err, data) => {
             if (err) {
                 alert("An error ocurred reading the file :" + err.message)
                 return

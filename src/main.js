@@ -58,10 +58,12 @@ ipcMain.on('show-settings-windows', () => {
     }
 })
 
-ipcMain.on('hide-settings-windows', () => {
+ipcMain.on('hide-settings-windows', (event, reload) => {
     if (settingsWindow) {
         settingsWindow.close()
-        mainWindow.webContents.reload()
+        if (reload) {
+            mainWindow.webContents.reload()
+        }
     }
 })
 

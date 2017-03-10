@@ -11,24 +11,9 @@ const elements = {
     "preview.links_in_new_window": "checkbox"
 }
 
-document.querySelector('#cancelButton').addEventListener('click', function (e) {
-    e.preventDefault()
-    ipcRenderer.send('hide-settings-windows')
-})
-
-document.querySelector('#saveButton').addEventListener('click', function (e) {
-    e.preventDefault()
-    saveSettings().then(() => {
-        console.log('Settings saved')
-        ipcRenderer.send('hide-settings-windows')
-    }).catch((e) => {
-        console.log(e)
-    })
-})
-
 function loadSettings() {
     return new Promise((resolve, reject) => {
-        Object.keys(elements).forEach(function (index) {
+        Object.keys(elements).forEach((index) => {
             let element = document.querySelector('[name="' + index + '"]')
             if (!element) {
                 reject(Error('Element ' + index + ' not found.'))
@@ -52,7 +37,7 @@ function loadSettings() {
 function saveSettings() {
     return new Promise((resolve, reject) => {
 
-        Object.keys(elements).forEach(function (index) {
+        Object.keys(elements).forEach((index) => {
             let element = document.querySelector('[name="' + index + '"]')
             if (!element) {
                 reject(Error('Element ' + index + ' not found.'))
@@ -72,11 +57,25 @@ function saveSettings() {
         store.sort()
         store.store()
 
-        // Everything is ok
         resolve()
     })
 
 }
+
+document.querySelector('#cancelButton').addEventListener('click', (e) => {
+    e.preventDefault()
+    ipcRenderer.send('hide-settings-windows', false)
+})
+
+document.querySelector('#saveButton').addEventListener('click', (e) => {
+    e.preventDefault()
+    saveSettings().then(() => {
+        console.log('Settings saved')
+        ipcRenderer.send('hide-settings-windows', true)
+    }).catch((e) => {
+        console.log(e)
+    })
+})
 
 loadSettings().then(() => {
     console.log('Settings loaded')
