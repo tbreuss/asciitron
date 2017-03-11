@@ -4,6 +4,7 @@ const {ipcRenderer} = require('electron')
 const store = require('electron').remote.getGlobal('store')
 
 const elements = {
+    "asciidoctor.theme": "select",
     "editor.theme": "select",
     "editor.gutter": "checkbox",
     "preview.highlightjs": "checkbox",

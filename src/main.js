@@ -33,7 +33,7 @@ function createSettingswindow() {
         alwaysOnTop: true,
         modal: true,
         width: 600,
-        height: 400
+        height: 500
         //x: x + (width / 2) - 300,
         //y: y + (height / 2) - 200
     })
@@ -44,7 +44,7 @@ function createSettingswindow() {
         slashes: true
     }))
 
-    settingsWindow.webContents.openDevTools()
+    //settingsWindow.webContents.openDevTools()
 
     // Emitted when the window is closed.
     settingsWindow.on('closed', () => {
@@ -71,6 +71,7 @@ ipcMain.on('hide-settings-windows', (event, reload) => {
 global.store = new Store({
     configName: 'user-preferences',
     defaults: {
+        "asciidoctor.theme": "asciidoctor",
         "window.width": 800,
         "window.height": 600,
         "editor.theme": "ace/theme/twilight",

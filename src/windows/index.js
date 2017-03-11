@@ -129,3 +129,6 @@ ipcRenderer.on('show-preview-pane', (event, visible) => {
     let editor = document.getElementById('preview')
     editor.style.display = visible ? 'block': 'none'
 })
+
+
+asset.addCSS('../vendor/asciidoctor-stylesheet-factory/stylesheets/' + store.get('asciidoctor.theme') + '.css')
