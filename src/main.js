@@ -64,6 +64,17 @@ ipcMain.on('close-settings-windows', () => {
     }
 })
 
+ipcMain.on('content-stored', (event, reload) => {
+    console.log('content stored')
+    if (mainWindow && reload) {
+        mainWindow.reload()
+    }
+})
+
+ipcMain.on('content-restored', () => {
+    console.log('content restored')
+})
+
 // initialize the store
 global.store = new Store({
     configName: 'user-preferences',
@@ -152,7 +163,6 @@ function createWindow() {
         menu.items[1].submenu.items[1].enabled = true
     })
 
-    exports.createSettingswindow = createSettingswindow
     require('./menu')
 
 }
@@ -188,3 +198,6 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+exports.createSettingswindow = createSettingswindow
+exports.mainWindow = mainWindow

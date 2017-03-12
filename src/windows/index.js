@@ -124,11 +124,21 @@ ipcRenderer.on('show-preview-pane', (event, visible) => {
     editor.style.display = visible ? 'block': 'none'
 })
 
-ipcRenderer.on('restore-content', () => {
-    let content = 'http://asciidoctor.org[*Asciidoctor*] ' +
-        'running on http://opalrb.org[_Opal_] ' +
-        'brings AsciiDoc to the browser!!'
+ipcRenderer.on('store-content', (event, reload) => {
+    localStorage.setItem('content', editor.getValue())
+    event.sender.send('content-stored', reload)
+})
+
+ipcRenderer.on('restore-content', (event) => {
+    let content = localStorage.getItem('content')
+    localStorage.removeItem('content')
+    if (content === null) {
+        content = 'http://asciidoctor.org[*Asciidoctor*] ' +
+            'running on http://opalrb.org[_Opal_] ' +
+            'brings AsciiDoc to the browser!!'
+    }
     editor.session.setValue(content)
+    event.sender.send('content-restored')
 })
 
 ipcRenderer.on('apply-store-settings', () => {

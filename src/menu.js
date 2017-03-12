@@ -1,6 +1,7 @@
 "use strict"
 
 const {Menu} = require('electron')
+const {ipcMain} = require('electron')
 const electron = require('electron')
 const app = electron.app
 const dialog = require('electron').dialog
@@ -98,7 +99,9 @@ const template = [
                 label: i18n.__('Reload'),
                 accelerator: 'CmdOrCtrl+R',
                 click (item, focusedWindow) {
-                    if (focusedWindow) focusedWindow.reload()
+                    if (focusedWindow) {
+                        focusedWindow.webContents.send('store-content', true)
+                    }
                 }
             },
             {
@@ -243,6 +246,7 @@ if (process.platform === 'darwin') {
             },
             {
                 label: i18n.__('Settings'),
+                accelerator: process.platform === 'darwin' ? 'Command+,' : 'Ctrl+,',
                 click () {
                     createSettingswindow()
                 }
