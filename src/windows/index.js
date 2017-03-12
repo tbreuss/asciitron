@@ -23,7 +23,7 @@ function setStoreSettings()
     editor.setTheme(store.get('editor.theme'))
 
     // remove unused editor style and script
-    let editorTheme = store.getOld('editor.theme')
+    let editorTheme = store.getChanged('editor.theme')
     if (editorTheme && (editorTheme != store.get('editor.theme'))) {
         editorTheme = editorTheme.replace('ace/theme/', '')
         let styleId = 'ace-' + editorTheme.replace(/_/g, '-');
@@ -78,6 +78,13 @@ worker.onmessage = (event) => {
             }
         })
 
+    }
+
+    var imgs = document.querySelectorAll('#preview img');
+    for (var img of imgs) {
+        img.onerror = function () {
+            img.src = '../assets/img/image-notfound.gif'
+        }
     }
 
 };

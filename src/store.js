@@ -28,22 +28,16 @@ class Store {
         this.data[key] = val
     }
 
-    getOld(key) {
+    getChanged(key) {
         return this.changed[key]
-    }
-
-    hasChanged(key) {
-        return this.changed[key] && (this.data[key] != this.changed[key])
     }
 
     restore(defaults) {
         let data = defaults
         try {
             let tempData = JSON.parse(fs.readFileSync(this.path))
-            //console.log(tempData)
             Object.keys( tempData ).forEach( key => {
                 data[key] = tempData[key]
-                //console.log(key, tempData[key])
             })
         } catch (e) {}
         return data

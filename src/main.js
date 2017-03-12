@@ -18,8 +18,9 @@ let content = null
 let mainWindow = null
 let settingsWindow = null
 
+
 function createSettingswindow() {
-    if (!mainWindow) {
+    if (!mainWindow || settingsWindow) {
         return
     }
 
@@ -31,7 +32,7 @@ function createSettingswindow() {
         parent: mainWindow,
         resizable: false,
         alwaysOnTop: true,
-        modal: true,
+        modal: false,
         width: 600,
         height: 500
         //x: x + (width / 2) - 300,
