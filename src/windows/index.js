@@ -3,8 +3,8 @@
 // All of the Node.js APIs are available in this process.
 "use strict"
 
-const {ipcRenderer} = require('electron')
 const fs = require('fs')
+const ipcRenderer = require('electron').ipcRenderer
 const shell = require('electron').shell
 const store = require('electron').remote.getGlobal('store')
 const asset = require('../lib/asset')
@@ -16,16 +16,41 @@ let editor = ace.edit("editor")
 let worker = new Worker('worker.js');
 
 
+// Functions
+
+function setStoreSettings()
+{
+    editor.setTheme(store.get('editor.theme'))
+
+    // remove unused editor style and script
+    let editorTheme = store.getOld('editor.theme')
+    if (editorTheme && (editorTheme != store.get('editor.theme'))) {
+        editorTheme = editorTheme.replace('ace/theme/', '')
+        let styleId = 'ace-' + editorTheme.replace(/_/g, '-');
+        asset.removeStyle(styleId)
+        asset.removeStyle(styleId + '-theme')
+        let srcSubString = 'theme-' + editorTheme + '.js'
+        asset.removeScript(srcSubString)
+    }
+
+    editor.renderer.setShowGutter(store.get('editor.gutter'))
+    if (store.get('preview.highlightjs') === true) {
+        let href = '../vendor/highlight/styles/' + store.get('preview.highlightjs.theme') + '.css'
+        asset.swapCSS('highlight-css', href)
+    }
+    let href = '../vendor/asciidoctor-stylesheet-factory/stylesheets/' + store.get('asciidoctor.theme') + '.css'
+    asset.swapCSS('asciidoctor-css', href)
+}
+
+
+// Worker Event Handler
+
 worker.onmessage = (event) => {
 
     // Converted data from worker
     document.getElementById('preview').innerHTML = event.data
 
     if (store.get('preview.highlightjs') === true) {
-
-        //console.log('preview.highlightjs')
-
-        asset.addCSS('../vendor/highlight/styles/' + store.get('preview.highlightjs.theme') + '.css')
 
         // Highlight JS
         let codeBlocks = document.querySelectorAll("pre.highlight code")
@@ -43,7 +68,7 @@ worker.onmessage = (event) => {
 
         // Open all links externally
         const links = document.querySelectorAll('#preview a[href]')
-        Array.prototype.forEach.call(links, (link) => {
+        links.forEach((link) => {
             const url = link.getAttribute('href')
             if (url.indexOf('http') === 0) {
                 link.addEventListener('click', (e) => {
@@ -58,38 +83,7 @@ worker.onmessage = (event) => {
 };
 
 
-editor.$blockScrolling = Infinity
-editor.setTheme(store.get('editor.theme'))
-editor.session.setMode('ace/mode/asciidoc')
-editor.session.setUseWrapMode(true)
-editor.renderer.setShowGutter(store.get('editor.gutter'))
-editor.renderer.setPadding(padding)
-editor.renderer.setScrollMargin(margin, margin)
-editor.renderer.setPrintMarginColumn(false)
-
-
-editor.session.on('change', () => {
-    util.wait(() => {
-        let asciidoc = editor.session.getValue()
-        worker.postMessage([asciidoc])
-    }, 500)
-})
-
-editor.session.on('changeScrollTop', (scrollTop) => {
-    let lines = editor.session.getScreenLength()
-    let scrollHeight = editor.renderer.lineHeight * lines
-    let clientHeight = document.querySelector('#editor').clientHeight
-    let editorScrollPosition = (scrollTop + margin) / (scrollHeight - clientHeight + (2 * margin))
-    let preview = document.getElementById('preview')
-    preview.scrollTop = editorScrollPosition * (preview.scrollHeight - preview.clientHeight)
-})
-
-
 // IPC Event Handler
-
-ipcRenderer.on('replace-content', (event, arg) => {
-    editor.session.setValue(arg)
-})
 
 ipcRenderer.on('save-file', (event, fileName) => {
     if (fileName) {
@@ -130,5 +124,44 @@ ipcRenderer.on('show-preview-pane', (event, visible) => {
     editor.style.display = visible ? 'block': 'none'
 })
 
+ipcRenderer.on('restore-content', () => {
+    let content = 'http://asciidoctor.org[*Asciidoctor*] ' +
+        'running on http://opalrb.org[_Opal_] ' +
+        'brings AsciiDoc to the browser!!'
+    editor.session.setValue(content)
+})
 
-asset.addCSS('../vendor/asciidoctor-stylesheet-factory/stylesheets/' + store.get('asciidoctor.theme') + '.css')
+ipcRenderer.on('apply-store-settings', () => {
+    setStoreSettings()
+})
+
+
+// Editor Event Handler
+
+editor.session.on('change', () => {
+    util.wait(() => {
+        let asciidoc = editor.session.getValue()
+        worker.postMessage([asciidoc])
+    }, 500)
+})
+
+editor.session.on('changeScrollTop', (scrollTop) => {
+    let lines = editor.session.getScreenLength()
+    let scrollHeight = editor.renderer.lineHeight * lines
+    let clientHeight = document.querySelector('#editor').clientHeight
+    let editorScrollPosition = (scrollTop + margin) / (scrollHeight - clientHeight + (2 * margin))
+    let preview = document.getElementById('preview')
+    preview.scrollTop = editorScrollPosition * (preview.scrollHeight - preview.clientHeight)
+})
+
+
+
+editor.$blockScrolling = Infinity
+editor.session.setMode('ace/mode/asciidoc')
+editor.session.setUseWrapMode(true)
+editor.renderer.setPadding(padding)
+editor.renderer.setScrollMargin(margin, margin)
+editor.renderer.setPrintMarginColumn(false)
+
+
+setStoreSettings()

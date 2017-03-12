@@ -63,20 +63,23 @@ function saveSettings() {
 
 }
 
-document.querySelector('#cancelButton').addEventListener('click', (e) => {
+
+document.querySelector('#closeButton').addEventListener('click', (e) => {
     e.preventDefault()
-    ipcRenderer.send('hide-settings-windows', false)
+    ipcRenderer.send('close-settings-windows', false)
 })
 
-document.querySelector('#saveButton').addEventListener('click', (e) => {
-    e.preventDefault()
-    saveSettings().then(() => {
-        console.log('Settings saved')
-        ipcRenderer.send('hide-settings-windows', true)
-    }).catch((e) => {
-        console.log(e)
+document.querySelectorAll('form select, form input').forEach((el) => {
+    el.addEventListener('change', (e) => {
+        saveSettings().then(() => {
+            console.log('Settings saved')
+            ipcRenderer.send('apply-store-settings')
+        }).catch((e) => {
+            console.log(e)
+        })
     })
 })
+
 
 loadSettings().then(() => {
     console.log('Settings loaded')

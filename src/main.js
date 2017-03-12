@@ -52,18 +52,15 @@ function createSettingswindow() {
     })
 }
 
-ipcMain.on('show-settings-windows', () => {
-    if (!settingsWindow) {
-        createSettingswindow()
+ipcMain.on('apply-store-settings', () => {
+    if (mainWindow) {
+        mainWindow.webContents.send('apply-store-settings')
     }
 })
 
-ipcMain.on('hide-settings-windows', (event, reload) => {
+ipcMain.on('close-settings-windows', () => {
     if (settingsWindow) {
         settingsWindow.close()
-        if (reload) {
-            mainWindow.webContents.reload()
-        }
     }
 })
 
@@ -107,9 +104,8 @@ function createWindow() {
     }))
 
     // Open the DevTools.
-    mainWindow.webContents.openDevTools()
     mainWindow.webContents.on("devtools-opened", () => {
-//        mainWindow.webContents.closeDevTools();
+        // mainWindow.webContents.closeDevTools();
     });
 
     mainWindow.on('resize', () => {
@@ -128,6 +124,10 @@ function createWindow() {
         store.set('window.y', y)
     });
 
+    mainWindow.on('close', () => {
+        console.log('close')
+    })
+
     // Emitted when the window is closed.
     mainWindow.on('closed', () => {
         // Dereference the window object, usually you would store windows
@@ -139,11 +139,7 @@ function createWindow() {
     })
 
     mainWindow.webContents.on('did-finish-load', () => {
-        mainWindow.webContents.send('replace-content',
-            'http://asciidoctor.org[*Asciidoctor*] ' +
-            'running on http://opalrb.org[_Opal_] ' +
-            'brings AsciiDoc to the browser!!'
-        )
+        mainWindow.webContents.send('restore-content')
     })
 
     mainWindow.on('hide', () => {

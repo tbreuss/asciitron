@@ -94,21 +94,22 @@ const template = [
     {
         label: i18n.__('Show'),
         submenu: [
-            /*{
+            {
                 label: i18n.__('Reload'),
                 accelerator: 'CmdOrCtrl+R',
                 click (item, focusedWindow) {
                     if (focusedWindow) focusedWindow.reload()
                 }
-            },*/
-            /*{
+            },
+            {
                 label: i18n.__('Toggle Developer Tools'),
                 role: 'toggledevtools',
                 accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
                 click (item, focusedWindow) {
                     if (focusedWindow) focusedWindow.webContents.toggleDevTools()
-                }
-            },*/
+                },
+                visible: true
+            },
             {
                 type: 'separator'
             },
