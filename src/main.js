@@ -84,7 +84,8 @@ global.store = new Store({
         "window.width": 800,
         "window.height": 600,
         "editor.theme": "ace/theme/twilight",
-        "editor.gutter": false,
+        "editor.showGutter": false,
+        "editor.showInvisibles": false,
         "preview.highlightjs": true,
         "preview.highlightjs.theme": "default",
         "preview.links_in_new_window": true

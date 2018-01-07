@@ -20,6 +20,10 @@ let worker = new Worker('worker.js');
 
 function setStoreSettings()
 {
+    editor.$blockScrolling = Infinity
+
+    editor.session.setMode('ace/mode/asciidoc')
+    editor.session.setUseWrapMode(true)
     editor.setTheme(store.get('editor.theme'))
 
     // remove unused editor style and script
@@ -33,7 +37,16 @@ function setStoreSettings()
         asset.removeScript(srcSubString)
     }
 
-    editor.renderer.setShowGutter(store.get('editor.gutter'))
+    editor.renderer.setShowGutter(store.get('editor.showGutter'))
+    editor.renderer.setShowInvisibles(store.get('editor.showInvisibles'))
+    editor.renderer.setOptions({
+        showGutter: store.get('editor.showGutter'),
+        showInvisibles: store.get('editor.showInvisibles'),
+        printMarginColumn: false
+    })
+    editor.renderer.setPadding(padding)
+    editor.renderer.setScrollMargin(margin, margin)
+
     if (store.get('preview.highlightjs') === true) {
         let href = '../vendor/highlight/styles/' + store.get('preview.highlightjs.theme') + '.css'
         asset.swapCSS('highlight-css', href)
@@ -170,15 +183,6 @@ editor.session.on('changeScrollTop', (scrollTop) => {
     let preview = document.getElementById('preview')
     preview.scrollTop = editorScrollPosition * (preview.scrollHeight - preview.clientHeight)
 })
-
-
-
-editor.$blockScrolling = Infinity
-editor.session.setMode('ace/mode/asciidoc')
-editor.session.setUseWrapMode(true)
-editor.renderer.setPadding(padding)
-editor.renderer.setScrollMargin(margin, margin)
-editor.renderer.setPrintMarginColumn(false)
 
 
 setStoreSettings()

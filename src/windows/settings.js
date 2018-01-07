@@ -6,7 +6,8 @@ const store = require('electron').remote.getGlobal('store')
 const elements = {
     "asciidoctor.theme": "select",
     "editor.theme": "select",
-    "editor.gutter": "checkbox",
+    "editor.showGutter": "checkbox",
+    "editor.showInvisibles": "checkbox",
     "preview.highlightjs": "checkbox",
     "preview.highlightjs.theme": "select",
     "preview.links_in_new_window": "checkbox"
