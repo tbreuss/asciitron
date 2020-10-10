@@ -14,12 +14,11 @@ const url = require('url')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let content = null
 let mainWindow = null
 let settingsWindow = null
 
 
-function createSettingswindow() {
+function createSettingsWindow() {
     if (!mainWindow || settingsWindow) {
         return
     }
@@ -92,7 +91,7 @@ global.store = new Store({
         "editor.showInvisibles": false,
         "preview.highlightjs": true,
         "preview.highlightjs.theme": "default",
-        "preview.links_in_new_window": true
+        "preview.openLinksInNewWindow": true
     }
 });
 
@@ -209,5 +208,5 @@ app.on('activate', () => {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 
-exports.createSettingswindow = createSettingswindow
+exports.createSettingsWindow = createSettingsWindow
 exports.mainWindow = mainWindow

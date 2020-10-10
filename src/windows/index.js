@@ -77,7 +77,7 @@ worker.onmessage = (event) => {
 
     }
 
-    if (store.get('preview.links_in_new_window') === true) {
+    if (store.get('preview.openLinksInNewWindow') === true) {
 
         // Open all links externally
         const links = document.querySelectorAll('#preview a[href]')
