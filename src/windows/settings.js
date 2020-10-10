@@ -10,7 +10,7 @@ const elements = {
     "editor.showInvisibles": "checkbox",
     "preview.highlightjs": "checkbox",
     "preview.highlightjs.theme": "select",
-    "preview.links_in_new_window": "checkbox"
+    "preview.openLinksInNewWindow": "checkbox"
 }
 
 function loadSettings() {

@@ -3,7 +3,7 @@
 const {Menu} = require('electron')
 const app = require('electron').app
 const dialog = require('electron').dialog
-const createSettingswindow = require('./main').createSettingswindow
+const createSettingsWindow = require('./main').createSettingsWindow
 
 const i18n = new(require('./translations/i18n'))
 let currentFilePath = ''
@@ -284,7 +284,7 @@ if (process.platform === 'darwin') {
                 id: 'about-settings',
                 accelerator: process.platform === 'darwin' ? 'Command+,' : 'Ctrl+,',
                 click () {
-                    createSettingswindow()
+                    createSettingsWindow()
                 }
             },
             {
@@ -348,7 +348,8 @@ if (process.platform === 'darwin') {
     ]
 }
 
-const menu = Menu.buildFromTemplate(template)
+const mainMenu = Menu.buildFromTemplate(template)
+Menu.setApplicationMenu(mainMenu)
 
 function setEditorPaneVisibility(focusedWindow, visible) {
     focusedWindow.webContents.send('show-editor-pane', visible)
@@ -372,22 +373,3 @@ function showPaneVisibility(focusedWindow) {
     setEditorPaneVisibility(focusedWindow, true)
     setPreviewPaneVisibility(focusedWindow, true)
 }
-
-Menu.setApplicationMenu(menu)
-
-return
-
-// Log menu items
-menu.items.forEach((item1, key1) => {
-    if (item1.type != 'separator') {
-        console.log(key1 + ' | ' + item1.id + ' | ' + item1.label)
-        item1.submenu.items.forEach((item2, key2) => {
-            if (item2.type != 'separator') {
-                if (item2.id == 'help-learn-more') {
-                    item2.enabled = false
-                }
-                console.log("\t" + key2 + ' | ' + item2.id + ' | ' + item2.label)
-            }
-        })
-    }
-})
