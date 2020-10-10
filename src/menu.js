@@ -5,7 +5,7 @@ const app = require('electron').app
 const dialog = require('electron').dialog
 const createSettingswindow = require('./main').createSettingswindow
 
-let i18n = new(require('./translations/i18n'))
+const i18n = new(require('./translations/i18n'))
 let currentFilePath = ''
 
 const template = [
@@ -21,14 +21,16 @@ const template = [
                     dialog.showOpenDialog({
                         properties: ['openFile'],
                         filters: [{ name: '*', extensions: ['adoc', 'asciidoc'] }]
-                    }, function (filePaths) {
-                        if (filePaths) {
-                            let filePath = filePaths[0]
+                    }).then(result => {
+                        if (result.filePaths) {
+                            let filePath = result.filePaths[0]
                             currentFilePath = filePath
                             focusedWindow.setTitle(filePath.split('/').pop())
                             focusedWindow.webContents.send('read-file', filePath)
                         }
-                    })
+                    }).catch(err => {
+                        console.error(err)
+                    });
                 }
             },
             {
@@ -42,12 +44,12 @@ const template = [
                     }
                     dialog.showSaveDialog({
                         filters: [{ name: '*', extensions: ['adoc'] }]
-                    }, function (filePath) {
-                        if (filePath) {
-                            currentFilePath = filePath
-                            focusedWindow.setTitle(filePath.split('/').pop())
-                            focusedWindow.webContents.send('save-file', filePath)
-                        }
+                    }).then(filePath => {
+                        currentFilePath = filePath
+                        focusedWindow.setTitle(filePath.split('/').pop())
+                        focusedWindow.webContents.send('save-file', filePath)
+                    }).catch(err => {
+                        console.error(err)
                     })
                 }
             }
@@ -264,9 +266,9 @@ const template = [
 ]
 
 if (process.platform === 'darwin') {
-    const name = app.getName()
+    const name = app.name
     template.unshift({
-        //label: name,
+        label: name,
         id: 'about',
         submenu: [
             {
