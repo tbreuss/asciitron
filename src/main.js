@@ -38,6 +38,7 @@ function createSettingswindow() {
         //x: x + (width / 2) - 300,
         //y: y + (height / 2) - 200
         webPreferences: {
+            enableRemoteModule: true,
             nodeIntegration: true
         }
     })
@@ -111,6 +112,7 @@ function createWindow() {
         y: store.get('window.y'),
         title: '',
         webPreferences: {
+            enableRemoteModule: true,
             nodeIntegration: true
         }
     })
