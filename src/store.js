@@ -11,7 +11,7 @@ class Store {
         this.path = path.join(userDataPath, opts.configName + '.json')
         this.dir = path.dirname(this.path)
         // create dir
-        if (!fs.exists(this.dir)) {
+        if (!fs.existsSync(this.dir)) {
             fs.mkdir(this.dir, 0o755, function () {
             })
         }
