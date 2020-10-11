@@ -1,14 +1,9 @@
 "use strict"
 
-const electron = require('electron')
-const Store = require('./store')
-const {ipcMain} = require('electron')
+const {app, BrowserWindow, Menu, ipcMain} = require('electron')
 
 // Module to control application life.
-const app = electron.app
-// Module to create native browser window.
-const BrowserWindow = electron.BrowserWindow
-
+const Store = require('./store')
 const path = require('path')
 const url = require('url')
 
@@ -163,12 +158,12 @@ function createWindow() {
     })
 
     mainWindow.on('hide', () => {
-        let menu = electron.Menu.getApplicationMenu()
+        const menu = Menu.getApplicationMenu()
         menu.items[1].submenu.items[1].enabled = false
     })
 
     mainWindow.on('show', () => {
-        let menu = electron.Menu.getApplicationMenu()
+        const menu = Menu.getApplicationMenu()
         menu.items[1].submenu.items[1].enabled = true
     })
 

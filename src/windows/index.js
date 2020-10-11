@@ -4,8 +4,7 @@
 "use strict"
 
 const fs = require('fs')
-const ipcRenderer = require('electron').ipcRenderer
-const shell = require('electron').shell
+const {ipcRenderer, shell} = require('electron')
 const store = require('electron').remote.getGlobal('store')
 const asset = require('../lib/asset')
 const util = require('../lib/util')
