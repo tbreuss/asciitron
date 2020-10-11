@@ -43,8 +43,6 @@ function createSettingsWindow() {
         slashes: true
     }))
 
-    //settingsWindow.webContents.openDevTools()
-
     // Emitted when the window is closed.
     settingsWindow.on('closed', () => {
         settingsWindow = null
@@ -64,14 +62,12 @@ ipcMain.on('close-settings-windows', () => {
 })
 
 ipcMain.on('content-stored', (event, reload) => {
-    console.log('content stored')
     if (mainWindow && reload) {
         mainWindow.reload()
     }
 })
 
 ipcMain.on('content-restored', () => {
-    console.log('content restored')
 })
 
 // initialize the store
@@ -140,7 +136,6 @@ function createWindow() {
     });
 
     mainWindow.on('close', () => {
-        console.log('close')
     })
 
     // Emitted when the window is closed.

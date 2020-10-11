@@ -25,9 +25,7 @@ const menuTemplate = [
                             focusedWindow.setTitle(filePath.split('/').pop())
                             focusedWindow.webContents.send('read-file', filePath)
                         }
-                    }).catch(err => {
-                        console.error(err)
-                    });
+                    })
                 }
             },
             {
@@ -45,8 +43,6 @@ const menuTemplate = [
                         currentFilePath = filePath
                         focusedWindow.setTitle(filePath.split('/').pop())
                         focusedWindow.webContents.send('save-file', filePath)
-                    }).catch(err => {
-                        console.error(err)
                     })
                 }
             }
