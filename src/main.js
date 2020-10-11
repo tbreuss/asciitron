@@ -28,7 +28,7 @@ function createSettingsWindow() {
         alwaysOnTop: true,
         modal: false,
         width: 600,
-        height: 500,
+        height: 600,
         //x: x + (width / 2) - 300,
         //y: y + (height / 2) - 200
         webPreferences: {
