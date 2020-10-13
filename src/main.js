@@ -33,7 +33,9 @@ function createSettingsWindow() {
         //y: y + (height / 2) - 200
         webPreferences: {
             enableRemoteModule: true,
-            nodeIntegration: true
+            nodeIntegration: true,
+            worldSafeExecuteJavaScript: false,
+            contextIsolation: false
         }
     })
 
@@ -103,7 +105,9 @@ function createWindow() {
         title: '',
         webPreferences: {
             enableRemoteModule: true,
-            nodeIntegration: true
+            nodeIntegration: true,
+            worldSafeExecuteJavaScript: false,
+            contextIsolation: false
         }
     })
 

@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self';"/>
     <link rel="stylesheet" href="../assets/css/main.css">
 </head>
 <body>
@@ -11,13 +11,8 @@
     <div id="preview"></div>
 </div>
 </body>
-
 <script src="../vendor/asciidoctor.js/asciidoctor-all.min.js"></script>
 <script src="../vendor/ace/src-min/ace.js" type="text/javascript" charset="utf-8"></script>
-<script>
-
-    require('./index.js')
-
-</script>
 <script src="../vendor/highlight/highlight.pack.js"></script>
+<script src="index.js"></script>
 </html>
