@@ -1,14 +1,9 @@
 "use strict"
 
-const electron = require('electron')
-const Store = require('./store')
-const {ipcMain} = require('electron')
+const {app, BrowserWindow, Menu, ipcMain} = require('electron')
 
 // Module to control application life.
-const app = electron.app
-// Module to create native browser window.
-const BrowserWindow = electron.BrowserWindow
-
+const Store = require('./store')
 const path = require('path')
 const url = require('url')
 
@@ -33,12 +28,14 @@ function createSettingsWindow() {
         alwaysOnTop: true,
         modal: false,
         width: 600,
-        height: 500,
+        height: 600,
         //x: x + (width / 2) - 300,
         //y: y + (height / 2) - 200
         webPreferences: {
             enableRemoteModule: true,
-            nodeIntegration: true
+            nodeIntegration: true,
+            worldSafeExecuteJavaScript: false,
+            contextIsolation: false
         }
     })
 
@@ -47,8 +44,6 @@ function createSettingsWindow() {
         protocol: 'file:',
         slashes: true
     }))
-
-    //settingsWindow.webContents.openDevTools()
 
     // Emitted when the window is closed.
     settingsWindow.on('closed', () => {
@@ -69,14 +64,12 @@ ipcMain.on('close-settings-windows', () => {
 })
 
 ipcMain.on('content-stored', (event, reload) => {
-    console.log('content stored')
     if (mainWindow && reload) {
         mainWindow.reload()
     }
 })
 
 ipcMain.on('content-restored', () => {
-    console.log('content restored')
 })
 
 // initialize the store
@@ -112,7 +105,9 @@ function createWindow() {
         title: '',
         webPreferences: {
             enableRemoteModule: true,
-            nodeIntegration: true
+            nodeIntegration: true,
+            worldSafeExecuteJavaScript: false,
+            contextIsolation: false
         }
     })
 
@@ -145,7 +140,6 @@ function createWindow() {
     });
 
     mainWindow.on('close', () => {
-        console.log('close')
     })
 
     // Emitted when the window is closed.
@@ -163,12 +157,12 @@ function createWindow() {
     })
 
     mainWindow.on('hide', () => {
-        let menu = electron.Menu.getApplicationMenu()
+        const menu = Menu.getApplicationMenu()
         menu.items[1].submenu.items[1].enabled = false
     })
 
     mainWindow.on('show', () => {
-        let menu = electron.Menu.getApplicationMenu()
+        const menu = Menu.getApplicationMenu()
         menu.items[1].submenu.items[1].enabled = true
     })
 

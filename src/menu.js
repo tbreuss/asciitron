@@ -1,14 +1,11 @@
 "use strict"
 
-const {Menu} = require('electron')
-const app = require('electron').app
-const dialog = require('electron').dialog
+const {app, dialog, Menu, shell} = require('electron')
 const createSettingsWindow = require('./main').createSettingsWindow
-
 const i18n = new(require('./translations/i18n'))
 let currentFilePath = ''
 
-const template = [
+const menuTemplate = [
     {
         label: i18n.__('File'),
         id: 'file',
@@ -28,9 +25,7 @@ const template = [
                             focusedWindow.setTitle(filePath.split('/').pop())
                             focusedWindow.webContents.send('read-file', filePath)
                         }
-                    }).catch(err => {
-                        console.error(err)
-                    });
+                    })
                 }
             },
             {
@@ -48,8 +43,6 @@ const template = [
                         currentFilePath = filePath
                         focusedWindow.setTitle(filePath.split('/').pop())
                         focusedWindow.webContents.send('save-file', filePath)
-                    }).catch(err => {
-                        console.error(err)
                     })
                 }
             }
@@ -258,7 +251,7 @@ const template = [
                 label: i18n.__('Learn More'),
                 id: 'help-learn-more',
                 click () {
-                    require('electron').shell.openExternal('http://electron.atom.io')
+                    shell.openExternal('http://electron.atom.io')
                 }
             }
         ]
@@ -266,13 +259,12 @@ const template = [
 ]
 
 if (process.platform === 'darwin') {
-    const name = app.name
-    template.unshift({
-        label: name,
+    menuTemplate.unshift({
+        label: app.name,
         id: 'about',
         submenu: [
             {
-                label: i18n.__('About') + ' ' + name,
+                label: i18n.__('About') + ' ' + app.name,
                 id: 'about-asciitron',
                 role: 'about'
             },
@@ -325,7 +317,7 @@ if (process.platform === 'darwin') {
         ]
     })
     // Window menu.
-    template[4].submenu = [
+    menuTemplate[4].submenu = [
         {
             label: i18n.__('Minimize'),
             id: 'window-minimize',
@@ -348,23 +340,26 @@ if (process.platform === 'darwin') {
     ]
 }
 
-const mainMenu = Menu.buildFromTemplate(template)
-Menu.setApplicationMenu(mainMenu)
+Menu.setApplicationMenu(
+    Menu.buildFromTemplate(menuTemplate)
+)
 
 function setEditorPaneVisibility(focusedWindow, visible) {
     focusedWindow.webContents.send('show-editor-pane', visible)
-    menu.items[3].submenu.items[8].visible = visible
-    menu.items[3].submenu.items[9].visible = !visible
-    if (!visible && menu.items[3].submenu.items[11].visible) {
+    const mainMenu = Menu.getApplicationMenu()
+    mainMenu.items[3].submenu.items[8].visible = visible
+    mainMenu.items[3].submenu.items[9].visible = !visible
+    if (!visible && mainMenu.items[3].submenu.items[11].visible) {
         setPreviewPaneVisibility(focusedWindow, true)
     }
 }
 
 function setPreviewPaneVisibility(focusedWindow, visible) {
     focusedWindow.webContents.send('show-preview-pane', visible)
-    menu.items[3].submenu.items[10].visible = visible
-    menu.items[3].submenu.items[11].visible = !visible
-    if (!visible && menu.items[3].submenu.items[9].visible) {
+    const mainMenu = Menu.getApplicationMenu()
+    mainMenu.items[3].submenu.items[10].visible = visible
+    mainMenu.items[3].submenu.items[11].visible = !visible
+    if (!visible && mainMenu.items[3].submenu.items[9].visible) {
         setEditorPaneVisibility(focusedWindow, true)
     }
 }

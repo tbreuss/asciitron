@@ -73,17 +73,10 @@ document.querySelector('#closeButton').addEventListener('click', (e) => {
 document.querySelectorAll('form select, form input').forEach((el) => {
     el.addEventListener('change', (e) => {
         saveSettings().then(() => {
-            console.log('Settings saved')
             ipcRenderer.send('apply-store-settings')
-        }).catch((e) => {
-            console.log(e)
         })
     })
 })
 
 
-loadSettings().then(() => {
-    console.log('Settings loaded')
-}).catch((e) => {
-    console.log(e)
-})
+loadSettings()
