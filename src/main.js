@@ -1,17 +1,14 @@
-"use strict"
+'use strict'
 
 const {app, BrowserWindow, Menu, ipcMain} = require('electron')
 
-// Module to control application life.
-const Store = require('./store')
+const store = require('./store')
 const path = require('path')
 const url = require('url')
+const fs = require('fs')
 
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
 let mainWindow = null
 let settingsWindow = null
-
 
 function createSettingsWindow() {
     if (!mainWindow || settingsWindow) {
@@ -32,10 +29,11 @@ function createSettingsWindow() {
         //x: x + (width / 2) - 300,
         //y: y + (height / 2) - 200
         webPreferences: {
-            enableRemoteModule: true,
-            nodeIntegration: true,
-            worldSafeExecuteJavaScript: false,
-            contextIsolation: false
+            nodeIntegration: false,
+            enableRemoteModule: false,
+            worldSafeExecuteJavaScript: true,
+            contextIsolation: true,
+            preload: path.join(app.getAppPath(), 'src/preload.js')
         }
     })
 
@@ -51,45 +49,9 @@ function createSettingsWindow() {
     })
 }
 
-ipcMain.on('apply-store-settings', () => {
-    if (mainWindow) {
-        mainWindow.webContents.send('apply-store-settings')
-    }
-})
+function createMainWindow() {
 
-ipcMain.on('close-settings-windows', () => {
-    if (settingsWindow) {
-        settingsWindow.close()
-    }
-})
-
-ipcMain.on('content-stored', (event, reload) => {
-    if (mainWindow && reload) {
-        mainWindow.reload()
-    }
-})
-
-ipcMain.on('content-restored', () => {
-})
-
-// initialize the store
-global.store = new Store({
-    configName: 'user-preferences',
-    defaults: {
-        "asciidoctor.theme": "asciidoctor",
-        "window.width": 800,
-        "window.height": 600,
-        "editor.theme": "ace/theme/twilight",
-        "editor.showGutter": false,
-        "editor.showInvisibles": false,
-        "preview.highlightjs": true,
-        "preview.highlightjs.theme": "default",
-        "preview.openLinksInNewWindow": true
-    }
-});
-
-
-function createWindow() {
+    const settings = store.read();
 
     // Create the browser window.
     mainWindow = new BrowserWindow({
@@ -98,16 +60,17 @@ function createWindow() {
         resizable: true,
         minWidth: 800,
         minHeight: 600,
-        width: store.get('window.width'),
-        height: store.get('window.height'),
-        x: store.get('window.x'),
-        y: store.get('window.y'),
+        width: settings['window.width'],
+        height: settings['window.height'],
+        x: settings['window.x'],
+        y: settings['window.y'],
         title: '',
         webPreferences: {
-            enableRemoteModule: true,
-            nodeIntegration: true,
-            worldSafeExecuteJavaScript: false,
-            contextIsolation: false
+            nodeIntegration: false,
+            enableRemoteModule: false,
+            worldSafeExecuteJavaScript: true,
+            contextIsolation: true,
+            preload: path.join(app.getAppPath(), 'src/preload.js')
         }
     })
 
@@ -119,25 +82,29 @@ function createWindow() {
     }))
 
     // Open the DevTools.
-    mainWindow.webContents.on("devtools-opened", () => {
-        // mainWindow.webContents.closeDevTools();
-    });
+    mainWindow.webContents.on('devtools-opened', () => {
+        // mainWindow.webContents.closeDevTools()
+    })
 
     mainWindow.on('resize', () => {
-        let {width, height, x, y} = mainWindow.getBounds();
-        store.set('window.width', width)
-        store.set('window.height', height)
-        store.set('window.x', x)
-        store.set('window.y', y)
-    });
+        let {width, height, x, y} = mainWindow.getBounds()
+        store.write({
+            'window.width': width,
+            'window.height': height,
+            'window.x': x,
+            'window.y': y
+        })
+    })
 
     mainWindow.on('move', () => {
-        let {width, height, x, y} = mainWindow.getBounds();
-        store.set('window.width', width)
-        store.set('window.height', height)
-        store.set('window.x', x)
-        store.set('window.y', y)
-    });
+        let {width, height, x, y} = mainWindow.getBounds()
+        store.write({
+            'window.width': width,
+            'window.height': height,
+            'window.x': x,
+            'window.y': y
+        })
+    })
 
     mainWindow.on('close', () => {
     })
@@ -170,37 +137,72 @@ function createWindow() {
 
 }
 
-
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
 app.on('ready', () => {
-    createWindow()
+    createMainWindow()
 })
 
-// Quit when all windows are closed.
 app.on('window-all-closed', () => {
-
-    store.sort()
-    store.store()
-
-    // On OS X it is common for applications and their menu bar
-    // to stay active until the user quits explicitly with Cmd + Q
     if (process.platform !== 'darwin') {
         app.quit()
     }
 })
 
 app.on('activate', () => {
-    // On OS X it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
     if (mainWindow === null) {
-        createWindow()
+        createMainWindow()
     }
 })
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
+ipcMain.on('apply-settings', () => {
+    if (mainWindow) {
+        const settings = store.read()
+        mainWindow.webContents.send('apply-settings', settings)
+    }
+})
+
+ipcMain.on('content-stored', (event, reload) => {
+    if (mainWindow && reload) {
+        mainWindow.reload()
+    }
+})
+
+ipcMain.on('content-restored', () => {
+})
+
+ipcMain.on('close-settings-windows', () => {
+    if (settingsWindow) {
+        settingsWindow.close()
+    }
+})
+
+ipcMain.on('load-settings', () => {
+    const settings = store.read();
+    settingsWindow.webContents.send('settings-loaded', settings)
+})
+
+ipcMain.on('save-settings', (event, settings) => {
+    store.write(settings);
+    mainWindow.webContents.send('apply-settings', settings)
+})
+
+ipcMain.on('read-file', (event, fileName) => {
+    fs.readFile(fileName, 'utf-8', (err, data) => {
+        if (err) {
+            console.error('An error ocurred reading the file :' + err.message)
+            return
+        }
+        mainWindow.webContents.send('file-read', data);
+    })
+})
+
+ipcMain.on('save-file', (event, args) => {
+    fs.writeFile(args.path, args.data, {}, (err) => {
+        if (err) {
+            console.error('An error ocurred reading the file :' + err.message)
+            return
+        }
+        console.info('File saved', args.path)
+    })
+})
 
 exports.createSettingsWindow = createSettingsWindow
-exports.mainWindow = mainWindow

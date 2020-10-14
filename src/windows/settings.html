@@ -2,8 +2,8 @@
 <html>
 <head>
     <title>Settings</title>
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self';"/>
-    <link rel="stylesheet" href="../vendor/photon/css/photon.min.css">
+    <meta content="script-src 'self';" http-equiv="Content-Security-Policy"/>
+    <link href="../vendor/photon/css/photon.min.css" rel="stylesheet">
     <style>
         .window {
             background-color: #ECECEC;
@@ -17,11 +17,8 @@
 </head>
 <body>
 <div class="window">
-
     <form>
-
         <h4 class="mt-0">Asciidoctor</h4>
-
         <div class="form-group">
             <label>Theme</label>
             <select class="form-control" name="asciidoctor.theme">
@@ -40,21 +37,17 @@
                 <option name="rocket-panda">Rocket Panda</option>
             </select>
         </div>
-
         <h4>Editor</h4>
-
         <div class="checkbox">
             <label>
-                <input type="checkbox" name="editor.showGutter"> Show gutter
+                <input name="editor.showGutter" type="checkbox"> Show gutter
             </label>
         </div>
-
         <div class="checkbox">
             <label>
-                <input type="checkbox" name="editor.showInvisibles"> Show invisibles
+                <input name="editor.showInvisibles" type="checkbox"> Show invisibles
             </label>
         </div>
-
         <div class="form-group">
             <label>Theme</label>
             <select class="form-control" name="editor.theme">
@@ -102,15 +95,12 @@
                 </optgroup>
             </select>
         </div>
-
         <h4>Highlight.js</h4>
-
         <div class="checkbox">
             <label>
-                <input type="checkbox" name="preview.highlightjs"> Highlight code
+                <input name="preview.highlightjs" type="checkbox"> Highlight code
             </label>
         </div>
-
         <div class="form-group">
             <label>Theme</label>
             <select class="form-control" name="preview.highlightjs.theme">
@@ -212,22 +202,17 @@
                 <option name="zenburn">zenburn</option>
             </select>
         </div>
-
         <h4>Content</h4>
-
         <div class="checkbox">
             <label>
-                <input type="checkbox" name="preview.openLinksInNewWindow"> Open links in new window
+                <input name="preview.openLinksInNewWindow" type="checkbox"> Open links in new window
             </label>
         </div>
-
         <div class="form-actions">
-            <button id="closeButton" class="btn btn-form btn-default">Close</button>
+            <button class="btn btn-form btn-default" id="closeButton">Close</button>
         </div>
-
     </form>
-
 </div>
 </body>
-<script src="settings.js"></script>
+<script src="settings.js" type="module"></script>
 </html>

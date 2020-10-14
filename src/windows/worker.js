@@ -1,4 +1,4 @@
-"use strict"
+'use strict'
 
 importScripts(['../vendor/asciidoctor.js/asciidoctor-all.min.js'])
 
