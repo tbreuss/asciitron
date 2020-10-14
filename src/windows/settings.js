@@ -1,35 +1,34 @@
-"use strict"
+'use strict'
 
-const {ipcRenderer} = require('electron')
-const store = require('electron').remote.getGlobal('store')
+const api = window.api || {}
 
 const elements = {
-    "asciidoctor.theme": "select",
-    "editor.theme": "select",
-    "editor.showGutter": "checkbox",
-    "editor.showInvisibles": "checkbox",
-    "preview.highlightjs": "checkbox",
-    "preview.highlightjs.theme": "select",
-    "preview.openLinksInNewWindow": "checkbox"
+    'asciidoctor.theme': 'select',
+    'editor.theme': 'select',
+    'editor.showGutter': 'checkbox',
+    'editor.showInvisibles': 'checkbox',
+    'preview.highlightjs': 'checkbox',
+    'preview.highlightjs.theme': 'select',
+    'preview.openLinksInNewWindow': 'checkbox'
 }
 
-function loadSettings() {
+function loadSettings(settings) {
     return new Promise((resolve, reject) => {
         Object.keys(elements).forEach((index) => {
             let element = document.querySelector('[name="' + index + '"]')
             if (!element) {
                 reject(Error('Element ' + index + ' not found.'))
             }
-            let value = store.get(index)
+            let value = settings[index]
             switch (elements[index]) {
-                case "select":
+                case 'select':
                     element.options.namedItem(value).selected = true
-                    break;
-                case "checkbox":
+                    break
+                case 'checkbox':
                     element.checked = value || false
-                    break;
+                    break
                 default:
-                    break;
+                    break
             }
         })
         resolve()
@@ -38,45 +37,43 @@ function loadSettings() {
 
 function saveSettings() {
     return new Promise((resolve, reject) => {
-
+        let settings = {}
         Object.keys(elements).forEach((index) => {
             let element = document.querySelector('[name="' + index + '"]')
             if (!element) {
                 reject(Error('Element ' + index + ' not found.'))
             }
             switch (elements[index]) {
-                case "select":
-                    store.set(index, element.options[element.selectedIndex].getAttribute('name'))
-                    break;
-                case "checkbox":
-                    store.set(index, element.checked)
-                    break;
+                case 'select':
+                    settings[index] = element.options[element.selectedIndex].getAttribute('name')
+                    break
+                case 'checkbox':
+                    settings[index] = element.checked
+                    break
                 default:
-                    break;
+                    break
             }
         })
-
-        store.sort()
-        store.store()
-
-        resolve()
+        resolve(settings)
     })
 
 }
 
-
 document.querySelector('#closeButton').addEventListener('click', (e) => {
     e.preventDefault()
-    ipcRenderer.send('close-settings-windows', false)
+    api.send('close-settings-windows')
 })
 
 document.querySelectorAll('form select, form input').forEach((el) => {
     el.addEventListener('change', (e) => {
-        saveSettings().then(() => {
-            ipcRenderer.send('apply-store-settings')
+        saveSettings().then((settings) => {
+            api.send('save-settings', settings)
         })
     })
 })
 
+api.receive('settings-loaded', (data) => {
+    loadSettings(data)
+})
 
-loadSettings()
+api.send('load-settings')

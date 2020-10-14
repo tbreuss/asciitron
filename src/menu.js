@@ -1,6 +1,6 @@
-"use strict"
+'use strict'
 
-const {app, dialog, Menu, shell} = require('electron')
+const {app, dialog, Menu, shell } = require('electron')
 const createSettingsWindow = require('./main').createSettingsWindow
 const i18n = new(require('./translations/i18n'))
 let currentFilePath = ''
@@ -22,7 +22,7 @@ const menuTemplate = [
                         if (result.filePaths) {
                             let filePath = result.filePaths[0]
                             currentFilePath = filePath
-                            focusedWindow.setTitle(filePath.split('/').pop())
+                            focusedWindow.setTitle(filePath)
                             focusedWindow.webContents.send('read-file', filePath)
                         }
                     })
@@ -117,7 +117,9 @@ const menuTemplate = [
                 role: 'toggledevtools',
                 accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
                 click (item, focusedWindow) {
-                    if (focusedWindow) focusedWindow.webContents.toggleDevTools()
+                    if (focusedWindow) {
+                        focusedWindow.webContents.toggleDevTools()
+                    }
                 },
                 visible: true
             },

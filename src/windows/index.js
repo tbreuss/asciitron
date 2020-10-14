@@ -1,56 +1,54 @@
-// This file is required by the index.html file and will
-// be executed in the renderer process for that window.
-// All of the Node.js APIs are available in this process.
 "use strict"
 
-const fs = require('fs')
-const {ipcRenderer, shell} = require('electron')
-const store = require('electron').remote.getGlobal('store')
-const asset = require('../lib/asset')
-const util = require('../lib/util')
+import asset from '../lib/asset.js'
+import util from '../lib/util.js'
 
-let margin = 10
-let padding = 10
-let editor = ace.edit("editor")
-let worker = new Worker('worker.js');
+const margin = 10
+const padding = 10
+const editor = ace.edit("editor")
+const worker = new Worker('worker.js')
 
+const store = {
+    get: () => {},
+    getChanged: () => {}
+}
 
 // Functions
 
-function setStoreSettings()
+function applyStoreSettings(settings)
 {
     editor.$blockScrolling = Infinity
 
     editor.session.setMode('ace/mode/asciidoc')
     editor.session.setUseWrapMode(true)
-    editor.setTheme(store.get('editor.theme'))
+    editor.setTheme(settings['editor.theme'])
 
     // remove unused editor style and script
     let editorTheme = store.getChanged('editor.theme')
-    if (editorTheme && (editorTheme != store.get('editor.theme'))) {
+    if (editorTheme && (editorTheme != settings['editor.theme'])) {
         editorTheme = editorTheme.replace('ace/theme/', '')
-        let styleId = 'ace-' + editorTheme.replace(/_/g, '-');
+        let styleId = 'ace-' + editorTheme.replace(/_/g, '-')
         asset.removeStyle(styleId)
         asset.removeStyle(styleId + '-theme')
         let srcSubString = 'theme-' + editorTheme + '.js'
         asset.removeScript(srcSubString)
     }
 
-    editor.renderer.setShowGutter(store.get('editor.showGutter'))
-    editor.renderer.setShowInvisibles(store.get('editor.showInvisibles'))
+    editor.renderer.setShowGutter(settings['editor.showGutter'])
+    editor.renderer.setShowInvisibles(settings['editor.showInvisibles'])
     editor.renderer.setOptions({
-        showGutter: store.get('editor.showGutter'),
-        showInvisibles: store.get('editor.showInvisibles'),
+        showGutter: settings['editor.showGutter'],
+        showInvisibles: settings['editor.showInvisibles'],
         printMarginColumn: false
     })
     editor.renderer.setPadding(padding)
     editor.renderer.setScrollMargin(margin, margin)
 
-    if (store.get('preview.highlightjs') === true) {
-        let href = '../vendor/highlight/styles/' + store.get('preview.highlightjs.theme') + '.css'
+    if (settings['preview.highlightjs'] === true) {
+        let href = '../vendor/highlight/styles/' + settings['preview.highlightjs.theme'] + '.css'
         asset.swapCSS('highlight-css', href)
     }
-    let href = '../vendor/asciidoctor-stylesheet-factory/stylesheets/' + store.get('asciidoctor.theme') + '.css'
+    let href = '../vendor/asciidoctor-stylesheet-factory/stylesheets/' + settings['asciidoctor.theme'] + '.css'
     asset.swapCSS('asciidoctor-css', href)
 }
 
@@ -85,46 +83,42 @@ worker.onmessage = (event) => {
             if (url.indexOf('http') === 0) {
                 link.addEventListener('click', (e) => {
                     e.preventDefault()
-                    shell.openExternal(url)
+                    //shell.openExternal(url)
                 })
             }
         })
 
     }
 
-    var imgs = document.querySelectorAll('#preview img');
+    var imgs = document.querySelectorAll('#preview img')
     for (var img of imgs) {
         img.onerror = function () {
             img.src = '../assets/img/image-notfound.gif'
         }
     }
 
-};
+}
+
 
 
 // IPC Event Handler
 
-ipcRenderer.on('save-file', (event, fileName) => {
+window.api.receive('save-file', (fileName) => {
     if (fileName) {
         let data = editor.session.getValue()
-        fs.writeFile(fileName, data, {}, () => {
-        })
+        window.api.send('save-file', {path: fileName, data: data})
     }
 })
 
-ipcRenderer.on('read-file', (event, fileName) => {
-    if (fileName) {
-        fs.readFile(fileName, 'utf-8', (err, data) => {
-            if (err) {
-                alert("An error ocurred reading the file :" + err.message)
-                return
-            }
-            editor.session.setValue(data)
-        })
-    }
+window.api.receive('read-file', (fileName) => {
+    window.api.send('read-file', fileName)
 })
 
-ipcRenderer.on('set-layout-columns', (event, config) => {
+window.api.receive('file-read', (data) => {
+    editor.session.setValue(data)
+})
+
+window.api.receive('set-layout-columns', (config) => {
     let editor = document.getElementById('editor')
     let preview = document.getElementById('preview')
     editor.style.flexBasis = config.left + '%'
@@ -133,22 +127,22 @@ ipcRenderer.on('set-layout-columns', (event, config) => {
     preview.style.display = 'block'
 })
 
-ipcRenderer.on('show-editor-pane', (event, visible) => {
+window.api.receive('show-editor-pane', (visible) => {
     let editor = document.getElementById('editor')
     editor.style.display = visible ? 'block' : 'none'
 })
 
-ipcRenderer.on('show-preview-pane', (event, visible) => {
+window.api.receive('show-preview-pane', (visible) => {
     let editor = document.getElementById('preview')
     editor.style.display = visible ? 'block': 'none'
 })
 
-ipcRenderer.on('store-content', (event, reload) => {
+window.api.receive('store-content', (reload) => {
     localStorage.setItem('content', editor.getValue())
-    event.sender.send('content-stored', reload)
+    window.api.send('content-stored', reload)
 })
 
-ipcRenderer.on('restore-content', (event) => {
+window.api.receive('restore-content', () => {
     let content = localStorage.getItem('content')
     localStorage.removeItem('content')
     if (content === null) {
@@ -157,11 +151,11 @@ ipcRenderer.on('restore-content', (event) => {
             'brings AsciiDoc to the browser!!'
     }
     editor.session.setValue(content)
-    event.sender.send('content-restored')
+    window.api.send('content-restored')
 })
 
-ipcRenderer.on('apply-store-settings', () => {
-    setStoreSettings()
+window.api.receive('apply-settings', (settings) => {
+    applyStoreSettings(settings)
 })
 
 
@@ -183,5 +177,4 @@ editor.session.on('changeScrollTop', (scrollTop) => {
     preview.scrollTop = editorScrollPosition * (preview.scrollHeight - preview.clientHeight)
 })
 
-
-setStoreSettings()
+window.api.send('apply-settings')

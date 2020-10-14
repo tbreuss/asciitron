@@ -1,6 +1,6 @@
-"use strict"
+'use strict'
 
-const path = require("path")
+const path = require('path')
 const electron = require('electron')
 const fs = require('fs');
 let loadedLanguage;
