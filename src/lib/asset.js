@@ -1,4 +1,4 @@
-"use strict"
+'use strict'
 
 // Include CSS file
 function addCSS(id, href) {
@@ -44,7 +44,7 @@ function removeScript(srcSubString) {
     })
 }
 
-module.exports = {
+export default {
     addCSS: addCSS,
     swapCSS: swapCSS,
     removeStyle: removeStyle,
