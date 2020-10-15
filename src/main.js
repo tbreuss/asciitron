@@ -86,27 +86,14 @@ function createMainWindow() {
         // mainWindow.webContents.closeDevTools()
     })
 
-    mainWindow.on('resize', () => {
-        let {width, height, x, y} = mainWindow.getBounds()
-        store.write({
-            'window.width': width,
-            'window.height': height,
-            'window.x': x,
-            'window.y': y
-        })
-    })
-
-    mainWindow.on('move', () => {
-        let {width, height, x, y} = mainWindow.getBounds()
-        store.write({
-            'window.width': width,
-            'window.height': height,
-            'window.x': x,
-            'window.y': y
-        })
-    })
-
     mainWindow.on('close', () => {
+        let {width, height, x, y} = mainWindow.getBounds()
+        store.write({
+            'window.width': width,
+            'window.height': height,
+            'window.x': x,
+            'window.y': y
+        })
     })
 
     // Emitted when the window is closed.
