@@ -11,7 +11,8 @@ const validSendChannels = [
     'content-restored',
     'content-stored',
     'read-file',
-    'save-file'
+    'save-file',
+    'open-external-url'
 ];
 
 const validReceiveChannels = [

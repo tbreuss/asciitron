@@ -1,6 +1,6 @@
 'use strict'
 
-const {app, BrowserWindow, Menu, ipcMain} = require('electron')
+const {app, BrowserWindow, Menu, ipcMain, shell} = require('electron')
 
 const store = require('./store')
 const path = require('path')
@@ -153,8 +153,7 @@ ipcMain.on('content-stored', (event, reload) => {
     }
 })
 
-ipcMain.on('content-restored', () => {
-})
+ipcMain.on('content-restored', () => {})
 
 ipcMain.on('close-settings-windows', () => {
     if (settingsWindow) {
@@ -190,6 +189,10 @@ ipcMain.on('save-file', (event, args) => {
         }
         console.info('File saved', args.path)
     })
+})
+
+ipcMain.on('open-external-url', (event, url) => {
+    shell.openExternal(url)
 })
 
 exports.createSettingsWindow = createSettingsWindow
