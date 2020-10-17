@@ -39,10 +39,10 @@ const menuTemplate = [
                     }
                     dialog.showSaveDialog({
                         filters: [{ name: '*', extensions: ['adoc'] }]
-                    }).then(filePath => {
-                        currentFilePath = filePath
-                        focusedWindow.setTitle(filePath.split('/').pop())
-                        focusedWindow.webContents.send('save-file', filePath)
+                    }).then(result => {
+                        currentFilePath = result.filePath
+                        focusedWindow.setTitle(result.filePath.split('/').pop())
+                        focusedWindow.webContents.send('save-file', result.filePath)
                     })
                 }
             }
