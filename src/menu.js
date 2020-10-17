@@ -22,7 +22,7 @@ const menuTemplate = [
                         if (result.filePaths) {
                             let filePath = result.filePaths[0]
                             currentFilePath = filePath
-                            focusedWindow.setTitle(filePath)
+                            focusedWindow.setTitle(filePath.split('/').pop())
                             focusedWindow.webContents.send('read-file', filePath)
                         }
                     })
