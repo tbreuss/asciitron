@@ -15,7 +15,7 @@ function createSettingsWindow() {
         return
     }
 
-    //let { width, height, x, y} = mainWindow.getBounds()
+    let {width, height, x, y} = mainWindow.getBounds()
 
     // Create the browser window.
     settingsWindow = new BrowserWindow({
@@ -26,8 +26,8 @@ function createSettingsWindow() {
         modal: false,
         width: 600,
         height: 600,
-        //x: x + (width / 2) - 300,
-        //y: y + (height / 2) - 200
+        x: x + (width / 2) - 300,
+        y: y + (height / 2) - 300,
         webPreferences: {
             nodeIntegration: false,
             enableRemoteModule: false,
