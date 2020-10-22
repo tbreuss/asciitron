@@ -7,42 +7,24 @@
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
-    "pack": "build --dir",
-    "dist": "build",
-    "postinstall": "install-app-deps",
-    "package-mac": "electron-packager . --overwrite --asar=true --platform=darwin --arch=x64 --icon=src/assets/icons/icon.icns --prune=true --ignore=bower_components --out=dist/packager/",
-    "package-win": "electron-packager . --overwrite --asar=true --platform=win32 --arch=ia32 --prune=true --out=dist/packager --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Asciitron\"",
-    "package-linux": "electron-packager . --overwrite --asar=true --platform=linux --arch=x64 --prune=true --out=dist/packager"
+    "postinstall": "electron-builder install-app-deps",
+    "build": "electron-builder --mac --windows --linux",
+    "release": "electron-builder --mac --windows --linux --publish always"
   },
   "build": {
-    "asar": true,
     "appId": "ch.tebe.asciitron",
-    "directories": {
-      "buildResources": "src/assets/icons",
-      "output": "dist/builder"
-    },
+    "productName": "Asciitron",
     "mac": {
-      "category": "public.app-category.utilities"
+      "category": "public.app-category.lifestyle"
     },
     "dmg": {
-      "contents": [
-        {
-          "x": 110,
-          "y": 150
-        },
-        {
-          "x": 240,
-          "y": 150,
-          "type": "link",
-          "path": "/Applications"
-        }
-      ]
+      "icon": false
     },
     "linux": {
       "target": [
-        "AppImage",
-        "deb"
-      ]
+        "AppImage"
+      ],
+      "category": "Office"
     }
   },
   "repository": {
@@ -58,8 +40,9 @@
   "license": "CC0-1.0",
   "devDependencies": {
     "electron": "^10.1.3",
-    "electron-builder": "^22.8.1",
-    "electron-packager": "^15.1.0"
+    "electron-builder": "^22.8.1"
   },
-  "dependencies": {}
+  "dependencies": {
+    "electron-updater": "^4.3.5"
+  }
 }

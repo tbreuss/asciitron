@@ -1,6 +1,6 @@
 'use strict'
 
-const {app, BrowserWindow, Menu, ipcMain} = require('electron')
+const {app, BrowserWindow, Menu, ipcMain, autoUpdater} = require('electron')
 
 const store = require('./store')
 const path = require('path')
@@ -126,6 +126,7 @@ function createMainWindow() {
 
 app.on('ready', () => {
     createMainWindow()
+    autoUpdater.checkForUpdatesAndNotify();
 })
 
 app.on('window-all-closed', () => {
