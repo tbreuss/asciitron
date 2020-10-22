@@ -15,7 +15,7 @@
     "appId": "ch.tebe.asciitron",
     "productName": "Asciitron",
     "mac": {
-      "category": "public.app-category.lifestyle"
+      "category": "public.app-category.productivity"
     },
     "dmg": {
       "icon": false
