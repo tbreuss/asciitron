@@ -1,55 +1,57 @@
 # Asciitron
 
-Asciitron is a simple [Asciidoc(tor)](https://asciidoctor.org) Editor built with [Electron](https://electronjs.org) and [Asciidoctor.js](https://asciidoctor.org/docs/asciidoctor.js/).
+Asciitron is a simple Desktop [AsciiDoc](https://asciidoctor.org/docs/what-is-asciidoc/) Editor built with [Electron](https://electronjs.org) and [Asciidoctor.js](https://asciidoctor.org/docs/asciidoctor.js/).
 
 ![Asciitron](asciitron.png)
-
 
 ## Prerequisites
 
 - Git (https://git-scm.com)
 - NPM (https://www.npmjs.com)
 
+## Development
 
-## How to use
+Clone this repository
 
-```bash
-# Clone this repository
+~~~bash
 git clone https://github.com/tbreuss/asciitron.git
+~~~
 
-# Go into the repository
+Go into the repository
+
+~~~bash
 cd asciitron
+~~~ 
 
-# Install dependencies
+Install dependencies
+
+~~~bash
 npm install
+~~~
 
-# Run the app
+Run the app
+
+~~~bash
 npm start
-```
+~~~
 
-## Other NPM scripts
+## Build & Release
+
+Build the application for Mac, Windows and Linux using Electron Builder.
+
+~~~bash
+npm run release
+~~~
+
+Build and release the application on Github Releases.
 
 ```bash
-# Pack repository
-npm pack
-
-# Build project
-npm build
-
-# Package MAC
-npm package-mac
-
-# Package Win
-npm package-win
-
-# Package Linux
-npm package-linux
+GH_TOKEN=MY_GITHUB_TOKEN npm run release
 ```
 
 ## License 
 
 [CC0 1.0 (Public Domain)](LICENSE.md)
-
 
 ## Suggestions
 
