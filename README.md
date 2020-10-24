@@ -14,6 +14,7 @@ Asciitron is a simple Desktop [AsciiDoc](https://asciidoctor.org/docs/what-is-as
 - [Ace (Ajax.org Cloud9 Editor)](https://ace.c9.io/)
 - [Asciidoctor.js](https://asciidoctor.org/docs/asciidoctor.js/)
 - [Asciidoctor Stylesheet Factory](https://github.com/asciidoctor/asciidoctor-stylesheet-factory)
+- [Electron](https://www.electronjs.org/)
 - [Highlight.js](https://highlightjs.org/)
 - [Photon](http://photonkit.com/)
 
