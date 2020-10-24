@@ -8,8 +8,8 @@
   "scripts": {
     "start": "electron .",
     "postinstall": "electron-builder install-app-deps",
-    "build": "electron-builder --mac --windows --linux",
-    "release": "electron-builder --mac --windows --linux --publish always"
+    "local:build": "electron-builder --mac --windows --linux",
+    "local:release": "electron-builder --mac --windows --linux --publish always"
   },
   "build": {
     "appId": "ch.tebe.asciitron",
